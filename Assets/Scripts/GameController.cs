@@ -4,13 +4,26 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    #region Singleton
+    public static GameController instance;
+    void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogWarning("many cameracontollers");
+            return;
+        }
+
+        instance = this;
+    }
+    #endregion
     MapGenerator generator;
     public Camera cam;
     System.Random random;
     int gameSeed;
-    public LayerMask waterLayerMask,shipsLayerMask;
-    public GameObject ship;
-    List<GameObject> placedShips;
+    public LayerMask waterLayerMask, shipsLayerMask;
+    public GameObject blackShip, whiteShip, dock;
+    List<GameObject> placedBlackShips, placedWhiteShips, placedDocks;
     Ship currentShip;
     void Start()
     {
@@ -18,25 +31,27 @@ public class GameController : MonoBehaviour
         random = new System.Random();
         gameSeed = random.Next(10000);
         generator.GenerateMap(gameSeed);
-        placedShips = generator.PlaceShips(ship,3);
-        currentShip = placedShips[0].GetComponent<Ship>();
+        placedBlackShips = generator.PlaceShips(blackShip, 3);
+        placedDocks = generator.PlaceDocks(dock, 5);
+        placedWhiteShips = generator.PlaceShips(whiteShip, 3);
+        currentShip = placedBlackShips[0].GetComponent<Ship>();
+        CameraController.instance.setTransform(currentShip.transform);
         currentShip.activateSelector();
     }
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0)){
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+        
+    }
 
-            if(Physics.Raycast(ray, out hit, 1500, shipsLayerMask)){
-                currentShip.deactivateSelector();
-                currentShip = hit.collider.GetComponent<Ship>();
-                currentShip.activateSelector();
-            }
-            else if(Physics.Raycast(ray,out hit,1500, waterLayerMask)){
-                currentShip.moveToPoint(hit.point);
-            }
-        }
+    public void playerMovement(Vector3 point){
+        currentShip.moveToPoint(point);
+    }
+
+    public void changeShip(Ship newShip){
+        currentShip.deactivateSelector();
+        currentShip = newShip;
+        CameraController.instance.setTransform(currentShip.transform);
+        currentShip.activateSelector();
     }
 }

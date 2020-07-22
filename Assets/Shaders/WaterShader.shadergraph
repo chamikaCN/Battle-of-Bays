@@ -34,7 +34,7 @@
             "typeInfo": {
                 "fullName": "UnityEditor.ShaderGraph.Internal.ColorShaderProperty"
             },
-            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"99f54a49-e6ad-44f2-ac85-c97f76d9a2bc\"\n    },\n    \"m_Name\": \"RippleColour\",\n    \"m_DefaultReferenceName\": \"Color_D97B9D6F\",\n    \"m_OverrideReferenceName\": \"\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Precision\": 0,\n    \"m_GPUInstanced\": false,\n    \"m_Hidden\": false,\n    \"m_Value\": {\n        \"r\": 0.13333332538604737,\n        \"g\": 0.410486102104187,\n        \"b\": 2.0,\n        \"a\": 1.0\n    },\n    \"m_ColorMode\": 1\n}"
+            "JSONnodeData": "{\n    \"m_Guid\": {\n        \"m_GuidSerialized\": \"99f54a49-e6ad-44f2-ac85-c97f76d9a2bc\"\n    },\n    \"m_Name\": \"RippleColour\",\n    \"m_DefaultReferenceName\": \"Color_D97B9D6F\",\n    \"m_OverrideReferenceName\": \"\",\n    \"m_GeneratePropertyBlock\": true,\n    \"m_Precision\": 0,\n    \"m_GPUInstanced\": false,\n    \"m_Hidden\": false,\n    \"m_Value\": {\n        \"r\": 0.10349081456661225,\n        \"g\": 0.16041076183319093,\n        \"b\": 0.4682959318161011,\n        \"a\": 1.0\n    },\n    \"m_ColorMode\": 1\n}"
         },
         {
             "typeInfo": {

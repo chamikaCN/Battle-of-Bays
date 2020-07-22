@@ -25,15 +25,11 @@ public class MapGenerator : MonoBehaviour
     Hashtable otherCountNumber = new Hashtable()
                 {{ OthersCount.None, 0 }, { OthersCount.Low, 10 }, { OthersCount.Medium, 22 }, { OthersCount.High, 50 }};
     public GameObject[] OtherPrefabs;
-    [Header("Identify Layers")]
-    public bool SeaPlaneIdentifier;
-    public GameObject SeaPlaneLocateModel;
-    [Range(0, 8)]
-    public int minimumNeighbours;
     [Header("Region Colors")]
     public TerrainType[] regions;
     MeshData mapMeshData;
     NavMeshSurface surface;
+    System.Random commonRandom;
 
     [System.Serializable]
     public struct TerrainType
@@ -51,6 +47,7 @@ public class MapGenerator : MonoBehaviour
         Seed = gameSeed;
         surface = GetComponent<NavMeshSurface>();
         clearPlacedObjects();
+        commonRandom = new System.Random();
 
         float[,] noiseMap = generateNoiseMap();
         AddFalloffEfect(noiseMap);
@@ -61,10 +58,6 @@ public class MapGenerator : MonoBehaviour
         drawMesh(mapMeshData);
         placeObjects(mapMeshData);
         surface.BuildNavMesh();
-        if (SeaPlaneIdentifier)
-        {
-            detectSeaPlane(mapMeshData);
-        }
 
     }
 
@@ -290,7 +283,7 @@ public class MapGenerator : MonoBehaviour
         int m = 0, n = 0;
         while (m < (int)(treeCountNumber[treeCount]) || n < (int)(otherCountNumber[otherCount]))
         {
-            int val = rand.Next(MapLength*MapWidth);
+            int val = rand.Next(MapLength * MapWidth);
             float x = md.vertices[val].x;
             float z = md.vertices[val].z;
             float y = md.vertices[val].y;
@@ -301,16 +294,16 @@ public class MapGenerator : MonoBehaviour
             if (y > 11 && m < (int)(treeCountNumber[treeCount]))
             {
                 int vegIndex = rand.Next(TreePrefabs.Length);
-                GameObject go = Instantiate(TreePrefabs[vegIndex], new Vector3(originalX, (2.5f * y)+2, originalZ), Quaternion.identity);
-                go.transform.localScale = go.transform.localScale*0.3f ;
+                GameObject go = Instantiate(TreePrefabs[vegIndex], new Vector3(originalX, (2.5f * y) + 2, originalZ), Quaternion.identity);
+                go.transform.localScale = go.transform.localScale * 0.3f;
                 go.transform.parent = GameObject.Find("Vegitation").transform;
                 m++;
             }
-            else if (y < 10 && n < (int)(otherCountNumber[otherCount]))
+            else if ((y < 10) && (x > (-MapWidth / 2) + 8) && (x < (MapWidth / 2) - 8) && (z > (-MapLength / 2) + 8) && (z < (MapLength / 2) - 8) && n < (int)(otherCountNumber[otherCount]))
             {
                 int otherIndex = rand.Next(OtherPrefabs.Length);
                 GameObject go = Instantiate(OtherPrefabs[otherIndex], new Vector3(originalX, (2.5f * 10) - 5, originalZ), Quaternion.identity);
-                go.transform.localScale = go.transform.localScale*0.5f ;
+                go.transform.localScale = go.transform.localScale * 0.5f;
                 go.transform.parent = GameObject.Find("OtherObjects").transform;
                 n++;
             }
@@ -318,11 +311,12 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public List<GameObject> PlaceShips(GameObject model, int count){
-        System.Random rand = new System.Random();
+    public List<GameObject> PlaceShips(GameObject model, int count)
+    {
         List<GameObject> gameObjects = new List<GameObject>();
-        for (int r = 0; r < count; r++){
-            Vector3 place = getValidplacement(rand);
+        for (int r = 0; r < count; r++)
+        {
+            Vector3 place = getValidShipPlacement(commonRandom);
             GameObject go = Instantiate(model, place, Quaternion.identity);
             go.transform.localScale = go.transform.localScale * 0.5f;
             gameObjects.Add(go);
@@ -330,7 +324,8 @@ public class MapGenerator : MonoBehaviour
         return gameObjects;
     }
 
-    Vector3 getValidplacement(System.Random random){
+    Vector3 getValidShipPlacement(System.Random random)
+    {
         int val = random.Next(MapLength * MapWidth);
         float x = mapMeshData.vertices[val].x;
         float z = mapMeshData.vertices[val].z;
@@ -339,31 +334,51 @@ public class MapGenerator : MonoBehaviour
         float originalX = 5 * (x);
         float originalZ = 5 * (z);
 
-        if(y<10 && getNeighbourSeaPlaneCount(mapMeshData, val)>7){
+        if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7)
+        {
             return new Vector3(originalX, 10, originalZ);
-        }else{
-            return getValidplacement(random);
+        }
+        else
+        {
+            return getValidShipPlacement(random);
         }
     }
 
-    void detectSeaPlane(MeshData md)
+    public List<GameObject> PlaceDocks(GameObject model, int count)
     {
+        System.Random rand = new System.Random();
+        List<Vector3> dockplaces = detectSeaPlane(mapMeshData);
+        int totalCount = dockplaces.Count;
+        List<GameObject> gameObjects = new List<GameObject>();
+        for (int r = 0; r < count; r++)
+        {
+            GameObject go = Instantiate(model, dockplaces[(totalCount / count) * r], Quaternion.identity);
+            go.transform.localScale = go.transform.localScale * 0.5f;
+            gameObjects.Add(go);
+        }
+        return gameObjects;
+    }
+
+
+
+    List<Vector3> detectSeaPlane(MeshData md)
+    {
+        List<Vector3> dockplaces = new List<Vector3>();
         for (int g = 0; g < MapLength * MapWidth; g++)
         {
             float x = md.vertices[g].x;
             float z = md.vertices[g].z;
             float y = md.vertices[g].y;
 
-            float originalX = 10 * (x + 0f);
-            float originalZ = 10 * (z + 0f);
+            float originalX = 5 * (x);
+            float originalZ = 5 * (z);
 
-            if (y < 1.2 && y >= 1 && getNeighbourSeaPlaneCount(md, g) > minimumNeighbours)
+            if (y > 10 && getNeighbourSeaPlaneCount(md, g) > 4)
             {
-                GameObject go = Instantiate(SeaPlaneLocateModel, new Vector3(originalX, (5 * y), originalZ), Quaternion.identity);
-                go.transform.localScale = go.transform.localScale * 0.5f;
-                go.transform.parent = GameObject.Find("OtherObjects").transform;
+                dockplaces.Add(new Vector3(originalX, 2.5f * y, originalZ));
             }
         }
+        return dockplaces;
     }
 
     int getNeighbourSeaPlaneCount(MeshData md, int index)
