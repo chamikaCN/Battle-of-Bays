@@ -53,7 +53,7 @@ public class HUDManager : MonoBehaviour
 
     void ClickUpdate()
     {
-        if (Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        if (Input.GetMouseButtonDown(0) && !IsPointerOverGameObject())
         {
             Ray ray = GameController.instance.cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -67,6 +67,23 @@ public class HUDManager : MonoBehaviour
                 GameController.instance.playerMovement(hit.point);
             }
         }
+
+    }
+
+    public static bool IsPointerOverGameObject()
+    {
+        //check mouse
+        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            return true;
+
+        //check touch
+        if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+        {
+            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
+                return true;
+        }
+
+        return false;
     }
 
 }
