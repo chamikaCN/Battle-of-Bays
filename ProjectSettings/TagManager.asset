@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Camera1
+  - whiteShip
+  - blackShip
+  - ship
+  - water
+  - ground
   layers:
   - Default
   - TransparentFX
