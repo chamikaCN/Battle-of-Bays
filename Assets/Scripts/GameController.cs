@@ -39,11 +39,6 @@ public class GameController : MonoBehaviour
         currentShip.activateSelector();
     }
 
-    void Update()
-    {
-        
-    }
-
     public void playerMovement(Vector3 point){
         currentShip.moveToPoint(point);
     }
@@ -53,5 +48,9 @@ public class GameController : MonoBehaviour
         currentShip = newShip;
         CameraController.instance.setTransform(currentShip.transform);
         currentShip.activateSelector();
+    }
+
+    public Camera getCamera(){
+        return cam;
     }
 }

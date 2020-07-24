@@ -30,11 +30,11 @@ public class CameraController : MonoBehaviour
     {
         currrentZoom = 1.4f;
         currentYaw = 1f;
-        pitch = 2f;
+        pitch = 5f;
         currentUpdown = 1f;
         offset = new Vector3(100, 30, 120);
-        updownSpeed = 5f;
-        yawSpeed = 7f;
+        updownSpeed = 8f;
+        yawSpeed = 12f;
     }
 
     void LateUpdate()
@@ -63,7 +63,7 @@ public class CameraController : MonoBehaviour
 
     public void CalculateCameraZoom(float requestZoom)
     {
-        currrentZoom = requestZoom + 1f;
+        currrentZoom = (requestZoom)*1.2f + 0.5f;
     }
 
     public void changeOffset(string team)
