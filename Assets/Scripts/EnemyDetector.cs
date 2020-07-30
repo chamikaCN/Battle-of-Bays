@@ -20,15 +20,22 @@ public class EnemyDetector : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 50, GameController.instance.shipsLayerMask))
         {
-            if (hit.collider.gameObject.tag != transform.parent.parent.parent.tag)
+            if (hit.collider.GetComponent<Ship>().getTeam() != transform.parent.GetComponent<Cannon>().getTeam())
             {
                 if (hit.collider.GetComponent<Ship>() != target)
                 {
                     target = hit.collider.GetComponent<Ship>();
                 }
-                transform.parent.GetComponent<Cannon>().attackToPoint(target.transform.position + new Vector3(0,2,0));
+                if (target != null)
+                {
+                    transform.parent.GetComponent<Cannon>().attackToPoint(target.transform.position + new Vector3(0, 2, 0));
+                }
             }
         }
 
+    }
+
+    public void undetect(){
+        target = null;
     }
 }

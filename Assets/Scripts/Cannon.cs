@@ -4,23 +4,29 @@ using UnityEngine;
 
 public class Cannon : MonoBehaviour
 {
-    string team;
+    public enum CannonType { ship, dock}
+    public CannonType cannonType;
+    GameController.Team team;
     bool isAttacked;
     public GameObject cannonBall;
     void Start()
     {
         isAttacked = false;
-        team = transform.parent.parent.tag;
+        if (cannonType == CannonType.ship)
+        {
+            team = transform.parent.parent.GetComponent<Ship>().getTeam();
+        }else{
+            team = GetComponentInParent<Dock>().getTeam();
+        }
     }
 
     public void attackToPoint(Vector3 point)
     {
         if (!isAttacked)
         {
-            Debug.Log("Attacked by " + name);
             transform.GetChild(0).LookAt(point, Vector3.up);
             GameObject cb = Instantiate(cannonBall, transform.GetChild(0).position, Quaternion.identity);
-            cb.GetComponent<CannonBall>().setTarget(point,transform.parent.parent.GetComponent<Ship>());
+            cb.GetComponent<CannonBall>().setTarget(point, team);
             isAttacked = true;
             StartCoroutine(attackReset());
         }
@@ -30,5 +36,10 @@ public class Cannon : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         isAttacked = false;
+    }
+
+    public GameController.Team getTeam()
+    {
+        return team;
     }
 }

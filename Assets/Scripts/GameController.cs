@@ -17,6 +17,8 @@ public class GameController : MonoBehaviour
         instance = this;
     }
     #endregion
+    public enum Team { white, black, neutral }
+    Team playerTeam = Team.black;
     MapGenerator generator;
     public Camera cam;
     System.Random random;
@@ -36,21 +38,83 @@ public class GameController : MonoBehaviour
         placedWhiteShips = generator.PlaceShips(whiteShip, 3);
         currentShip = placedBlackShips[0].GetComponent<Ship>();
         CameraController.instance.setTransform(currentShip.transform);
+        currentShip.activatePlayerControl();
         currentShip.activateSelector();
     }
 
-    public void playerMovement(Vector3 point){
+    public void playerMovement(Vector3 point)
+    {
         currentShip.moveToPoint(point);
     }
 
-    public void changeShip(Ship newShip){
+    public void changeShip(Ship newShip)
+    {
+        currentShip.deactivatePlayerControl();
         currentShip.deactivateSelector();
         currentShip = newShip;
         CameraController.instance.setTransform(currentShip.transform);
         currentShip.activateSelector();
+        currentShip.activatePlayerControl();
     }
 
-    public Camera getCamera(){
+    public Camera getCamera()
+    {
         return cam;
+    }
+
+    public void DestroyCheck(Ship ship)
+    {
+        foreach (GameObject item in placedDocks)
+        {
+            if (item.GetComponent<Dock>().getAllyShips().Contains(ship)) { item.GetComponent<Dock>().removeAllyShip(ship); }
+            else if (item.GetComponent<Dock>().getEnemyShips().Contains(ship)) { item.GetComponent<Dock>().removeEnemyShip(ship); }
+        }
+        if (ship == currentShip)
+        {
+            if (placedBlackShips.Count > 1)
+            {
+                placedBlackShips.Remove(ship.gameObject);
+                currentShip = placedBlackShips[0].GetComponent<Ship>();
+                CameraController.instance.setTransform(currentShip.transform);
+                currentShip.activateSelector();
+                foreach (GameObject s in placedWhiteShips)
+                {
+                    s.GetComponent<Ship>().removeEnemy(ship);
+                }
+                ship.getDestroyed();
+
+            }
+            else
+            {
+                Debug.Log("Game Over Won");
+            }
+        }
+        else if (ship.getTeam() == playerTeam)
+        {
+            placedBlackShips.Remove(ship.gameObject);
+            foreach (GameObject s in placedWhiteShips)
+            {
+                s.GetComponent<Ship>().removeEnemy(ship);
+            }
+            ship.getDestroyed();
+        }
+        else
+        {
+            if (placedWhiteShips.Count > 1)
+            {
+                placedWhiteShips.Remove(ship.gameObject);
+                foreach (GameObject s in placedBlackShips)
+                {
+                    s.GetComponent<Ship>().removeEnemy(ship);
+                }
+                ship.getDestroyed();
+            }
+            else
+            {
+                Debug.Log("Game Over Lost");
+            }
+
+        }
+        
     }
 }
