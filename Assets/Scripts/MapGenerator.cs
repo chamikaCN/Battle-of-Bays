@@ -249,7 +249,9 @@ public class MapGenerator : MonoBehaviour
 
     void drawMesh(MeshData meshData)
     {
-        meshFilter.sharedMesh = meshData.CreateMesh();
+        Mesh m = meshData.CreateMesh();
+        meshFilter.sharedMesh = m;
+        meshColliderGenerator.instance.setMesh(m);
     }
 
     void OnValidate()

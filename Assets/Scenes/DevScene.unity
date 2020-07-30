@@ -265,7 +265,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 169535156}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -458,7 +458,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 337320982}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1425,7 +1425,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314376545}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1508,7 +1508,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1547,9 +1547,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1300
-  field of view: 18
+  field of view: 20
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -1745,6 +1745,7 @@ GameObject:
   - component: {fileID: 1462779597}
   - component: {fileID: 1462779600}
   - component: {fileID: 1462779601}
+  - component: {fileID: 1462779602}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: ground
@@ -1843,6 +1844,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 844354867}
+--- !u!114 &1462779602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462779596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7a684213875391488ec572e45804c1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1550791741
 GameObject:
   m_ObjectHideFlags: 0
@@ -2037,7 +2050,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1629621290}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2296,7 +2309,7 @@ MonoBehaviour:
   TreePrefabs:
   - {fileID: 5883523522079944069, guid: 1bf085a790c9b4a4394763790cc4f11d, type: 3}
   - {fileID: 9060584550638680825, guid: 306871b49d3e18e488d25da52f2c39d3, type: 3}
-  - {fileID: 6537786423038893691, guid: 2d438a1fcf610fc4cbe12cdf2b6abf58, type: 3}
+  - {fileID: 8924420444894629620, guid: 95f17ac4a12a1c94ab670cc5a64bd44d, type: 3}
   otherCount: 1
   OtherPrefabs:
   - {fileID: 272693211731910871, guid: 46d0a06c1e3ff4f45aef06ed13855b0b, type: 3}
@@ -2383,7 +2396,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.29333332
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
 --- !u!114 &2010641804
