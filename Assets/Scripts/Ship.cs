@@ -6,24 +6,45 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Ship : MonoBehaviour
 {
-    int health = 15;
+    public GameObject explosion,selector;
+    GameObject Regenarate, Fire;
+    public float sp;
+    int health, maxHealth = 8;
     HealthBar healthBar;
     Canvas healthCanvas;
-    string team;
+    public GameController.Team shipTeam;
     NavMeshAgent agent;
-    public GameObject selector;
+    Vector3 direction;
+    Cannon[] cannons;
+    bool playerControlled, regenarating;
 
     void Awake()
     {
         healthCanvas = GetComponentInChildren<Canvas>();
         healthBar = healthCanvas.gameObject.GetComponentInChildren<HealthBar>();
+        cannons = GetComponentsInChildren<Cannon>();
     }
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        team = tag;
-        healthBar.setMaxHealth(health);
+        Fire = transform.GetChild(3).gameObject;
+        Regenarate = transform.GetChild(4).gameObject;
+        healthBar.setMaxHealth(maxHealth);
+        playerControlled = false;
+        health = maxHealth;
+        regenarating = false;
+    }
 
+    void LateUpdate()
+    {
+        if (!playerControlled && direction != null)
+        {
+            //       transform.LookAt(new Vector3(direction.x, 0, direction.z), Vector3.up);
+            //         Vector3 lookAtGoal = new Vector3(direction.x, transform.position.y, direction.z);
+            //         Vector3 dir = lookAtGoal - transform.position;
+            //         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5);
+        }
     }
 
     public void moveToPoint(Vector3 point)
@@ -41,24 +62,71 @@ public class Ship : MonoBehaviour
         selector.SetActive(false);
     }
 
-    public string getTeam()
+    public void activatePlayerControl()
     {
-        return team;
+        playerControlled = true;
     }
 
-    public void getDamage(int damage)
+    public void deactivatePlayerControl()
+    {
+        playerControlled = false;
+    }
+
+    public GameController.Team getTeam()
+    {
+        return shipTeam;
+    }
+
+    public void getDamage(int damage, Vector3 direction)
     {
         health = health - damage;
+
+        //Vector3 lTargetDir = -(direction - transform.position);
+        //lTargetDir.y = 0.0f;
+        //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(lTargetDir), Time.deltaTime * 100);
+
+        this.direction = direction;
+        if (health == 4)
+        {
+            //Instantiate(flames, transform.position + new Vector3(0, 3f, 0), transform.rotation, transform);
+            Fire.SetActive(true);
+        }
         healthBar.changeHealth(health);
         if (health == 0)
         {
-            getDestroyed();
+            GameController.instance.DestroyCheck(this);
         }
     }
 
-    void getDestroyed()
+    public void getDestroyed()
     {
-        Debug.Log("I was killed");
+        GameObject exp = Instantiate(explosion, transform.position + new Vector3(0, 1, 0), transform.rotation);
+        Destroy(this.gameObject);
     }
 
+    public void RegenarateHealth(){
+        if(!regenarating && health<maxHealth){
+            Regenarate.SetActive(true);
+            health += 1;
+            healthBar.changeHealth(health);
+            Debug.Log("one health regenarated");
+            regenarating = true;
+            StartCoroutine(regenarateReset());
+        }
+    }
+
+    public void removeEnemy(Ship ship)
+    {
+        foreach (Cannon can in cannons)
+        {
+            GetComponentInChildren<EnemyDetector>().undetect();
+        }
+    }
+
+    IEnumerator regenarateReset(){
+        yield return new WaitForSeconds(5);
+        Regenarate.SetActive(false);
+        regenarating = false;
+    }
 }
+
