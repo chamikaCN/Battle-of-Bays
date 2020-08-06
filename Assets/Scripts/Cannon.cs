@@ -4,19 +4,25 @@ using UnityEngine;
 
 public class Cannon : MonoBehaviour
 {
-    public enum CannonType { ship, dock}
+    public enum CannonType { ship, dock,hq}
     public CannonType cannonType;
     GameController.Team team;
     bool isAttacked;
+    int resetTime;
     public GameObject cannonBall;
     void Start()
     {
         isAttacked = false;
         if (cannonType == CannonType.ship)
         {
+            resetTime = 1;
             team = transform.parent.parent.GetComponent<Ship>().getTeam();
-        }else{
+        }else if (cannonType == CannonType.dock){
+            resetTime = 3;
             team = GetComponentInParent<Dock>().getTeam();
+        }else{
+            resetTime = 5;
+            team = GetComponentInParent<HQ>().getTeam();
         }
     }
 
@@ -34,7 +40,7 @@ public class Cannon : MonoBehaviour
 
     IEnumerator attackReset()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(resetTime);
         isAttacked = false;
     }
 
