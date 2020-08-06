@@ -6,7 +6,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Ship : MonoBehaviour
 {
-    public GameObject explosion,selector;
+    public GameObject explosion, selector;
     GameObject Regenarate, Fire;
     public float sp;
     int health, maxHealth = 8;
@@ -104,15 +104,27 @@ public class Ship : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    public void RegenarateHealth(){
-        if(!regenarating && health<maxHealth){
-            Regenarate.SetActive(true);
-            health += 1;
-            healthBar.changeHealth(health);
-            Debug.Log("one health regenarated");
-            regenarating = true;
-            StartCoroutine(regenarateReset());
+    public void RegenarateHealth()
+    {
+        if (!regenarating)
+        {
+            if (health < maxHealth)
+            {
+                Regenarate.SetActive(true);
+                Fire.SetActive(false);
+                regenarating = true;
+                StartCoroutine(regenarateReset());
+            }
+            else
+            {
+                stopRegenarateAnim();
+            }
         }
+    }
+
+    public void stopRegenarateAnim()
+    {
+        Regenarate.SetActive(false);
     }
 
     public void removeEnemy(Ship ship)
@@ -123,9 +135,11 @@ public class Ship : MonoBehaviour
         }
     }
 
-    IEnumerator regenarateReset(){
+    IEnumerator regenarateReset()
+    {
         yield return new WaitForSeconds(5);
-        Regenarate.SetActive(false);
+        health += 1;
+        healthBar.changeHealth(health);
         regenarating = false;
     }
 }

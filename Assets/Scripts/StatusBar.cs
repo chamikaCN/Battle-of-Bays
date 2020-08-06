@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour
+public class StatusBar : MonoBehaviour
 {
+    Color color = Color.gray;
     Slider slider;
-    public Gradient gradient;
     int maxHealth;
     public Image fill;
 
     void Awake()
     {
         slider = GetComponent<Slider>();
+        fill.color = color;
     }
 
     public void setMaxHealth(int health)
@@ -20,13 +21,17 @@ public class HealthBar : MonoBehaviour
         maxHealth = health;
         slider.maxValue = maxHealth;
         slider.value = maxHealth;
-        fill.color = gradient.Evaluate(1f);
     }
 
-    public void changeHealth(int newHealth)
+    public void changeHealth(int health)
     {
-        slider.value = newHealth;
-        fill.color = gradient.Evaluate((newHealth*1f) / maxHealth);
+        slider.value = health;
+    }
+
+    public void setColor(Color newColor)
+    {
+        color = newColor;
+        fill.color = color;
     }
 
 }

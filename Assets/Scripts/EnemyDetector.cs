@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class EnemyDetector : MonoBehaviour
 {
-    Ship target;
+    GameObject target;
+    
     private void Update()
     {
-        //transform.Rotate(new Vector3(0, 2, 0) * Time.deltaTime * 50f, Space.World);
-
         float MaxAngleDeflection = 60.0f;
         float SpeedOfPendulum = 1.0f;
 
@@ -22,13 +21,44 @@ public class EnemyDetector : MonoBehaviour
         {
             if (hit.collider.GetComponent<Ship>().getTeam() != transform.parent.GetComponent<Cannon>().getTeam())
             {
-                if (hit.collider.GetComponent<Ship>() != target)
+                if (hit.collider.gameObject != target)
                 {
-                    target = hit.collider.GetComponent<Ship>();
+                    target = hit.collider.gameObject;
                 }
                 if (target != null)
                 {
                     transform.parent.GetComponent<Cannon>().attackToPoint(target.transform.position + new Vector3(0, 2, 0));
+                }
+            }
+        }else if (Physics.Raycast(ray, out hit, 50, GameController.instance.docksLayerMask))
+        {
+            if (hit.collider.tag == "dock")
+            {
+                GameController.Team dockTeam = hit.collider.GetComponentInParent<Dock>().getTeam();
+                if (dockTeam != transform.parent.GetComponent<Cannon>().getTeam() && dockTeam != GameController.Team.neutral)
+                {
+                    if (hit.collider.gameObject != target)
+                    {
+                        target = hit.collider.gameObject;
+                    }
+                    if (target != null)
+                    {
+                        transform.parent.GetComponent<Cannon>().attackToPoint(target.transform.position + new Vector3(0, 3, 0));
+                    }
+                }
+            }else if (hit.collider.tag == "hq")
+            {
+                GameController.Team hqTeam = hit.collider.GetComponentInParent<HQ>().getTeam();
+                if (hqTeam != transform.parent.GetComponent<Cannon>().getTeam())
+                {
+                    if (hit.collider.gameObject != target)
+                    {
+                        target = hit.collider.gameObject;
+                    }
+                    if (target != null)
+                    {
+                        transform.parent.GetComponent<Cannon>().attackToPoint(target.transform.position + new Vector3(0, 3, 0));
+                    }
                 }
             }
         }

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8354014381495899706}
   - component: {fileID: 5618770143364414883}
   - component: {fileID: 2174489811642044113}
-  - component: {fileID: 7990351690438640964}
   m_Layer: 0
   m_Name: LargeCannonBall
   m_TagString: Untagged
@@ -79,19 +78,8 @@ MonoBehaviour:
   explosion: {fileID: 5001204293950690948, guid: ed29b5329fed7c44fbab534206b95886,
     type: 3}
   splash: {fileID: 5001204293950690948, guid: a26d1b6e9e614b243b34151f3bd19e56, type: 3}
-  shotSpeed: 1.15
---- !u!114 &7990351690438640964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9059792663894438526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecf85472c7b853c419bb9e7036a112a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  cannonType: 1
+  shotSpeed: 1500
 --- !u!1001 &693655993457215301
 PrefabInstance:
   m_ObjectHideFlags: 0
