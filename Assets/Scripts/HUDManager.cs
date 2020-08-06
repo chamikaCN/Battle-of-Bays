@@ -19,9 +19,11 @@ public class HUDManager : MonoBehaviour
     }
     #endregion
 
-    public GameObject gamePanel;
+    public float Xdiv,Ydiv;
+    public GameObject gamePanel,mapPanel;
     public Slider slider;
     public Joystick cameraJoystick;
+    public Button[] buttons;
     Color32 playerCol, enemyCol;
 
     void Start()
@@ -39,6 +41,26 @@ public class HUDManager : MonoBehaviour
 
     void SliderValueUpdate()
     {
+        // if (Input.GetAxis("Mouse ScrollWheel") != 0f) // forward
+        // {
+        //     CameraController.instance.CalculateCameraZoom(Input.GetAxis("Mouse ScrollWheel")/10);
+        // }
+        // if (Input.touchCount == 2)
+        // {
+        //     Debug.Log("got two");
+        //     Touch touchZero = Input.GetTouch(0);
+        //     Touch touchOne = Input.GetTouch(1);
+
+        //     Vector2 tzPrev = touchZero.position - touchZero.deltaPosition;
+        //     Vector2 toPrev = touchOne.position - touchOne.deltaPosition;
+
+        //     float prevMag = (tzPrev - toPrev).magnitude;
+        //     float currMag = (touchZero.position - touchOne.position).magnitude;
+
+        //     float dif = currMag - prevMag;
+        //     Debug.Log(dif);
+        //     CameraController.instance.CalculateCameraZoom(dif*0.01f);
+        // }
         CameraController.instance.CalculateCameraZoom(slider.value);
     }
 
@@ -60,7 +82,10 @@ public class HUDManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, 1500, GameController.instance.shipsLayerMask))
             {
-                GameController.instance.changeShip(hit.collider.GetComponent<Ship>());
+                if (GameController.instance.getTeam() == hit.collider.GetComponent<Ship>().getTeam())
+                {
+                    GameController.instance.changeShip(hit.collider.GetComponent<Ship>());
+                }
             }
             else if (Physics.Raycast(ray, out hit, 1500, GameController.instance.waterLayerMask))
             {
@@ -85,5 +110,32 @@ public class HUDManager : MonoBehaviour
 
         return false;
     }
+
+    public void setupButtons(int x, int z,int width, int length, int index, Vector3 place){
+        float screenWidth = GetComponent<CanvasScaler>().referenceResolution.x;
+        float screenHeight = GetComponent<CanvasScaler>().referenceResolution.y;
+
+        float Xposition = (x * 1f / width) * screenWidth;
+        float Yposition = (z * 1f / length) * screenHeight;
+
+        var rectTransform = buttons[index].GetComponent<RectTransform>();
+        buttons[index].GetComponent<DockButton>().setPlacement(place);
+        rectTransform.SetParent(transform.GetChild(2).GetComponent<RectTransform>());
+        rectTransform.position = new Vector2(Xposition/Xdiv, Yposition/Ydiv);
+    }
+
+    public void selectHQ(int index)
+    {
+        GameController.instance.selectHQ(index);
+        mapPanel.SetActive(false);
+    }
+
+    
+
+    public void TestSwapTeams(){
+        GameController.instance.TestSwapTeams();
+    }
+
+    
 
 }
