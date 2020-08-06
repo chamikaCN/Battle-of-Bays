@@ -24,6 +24,7 @@ public class CameraController : MonoBehaviour
     float yawSpeed, updownSpeed;
     float currrentZoom, currentYaw, pitch;
     float currentUpdown;
+    
 
 
     void Start()
@@ -64,6 +65,8 @@ public class CameraController : MonoBehaviour
     public void CalculateCameraZoom(float requestZoom)
     {
         currrentZoom = (requestZoom)*1.2f + 0.5f;
+        // currrentZoom = requestZoom;
+        // Debug.Log("req "+ requestZoom);
     }
 
     public void changeOffset(string team)
