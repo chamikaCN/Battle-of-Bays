@@ -11,6 +11,8 @@ TagManager:
   - water
   - ground
   - dock
+  - dockDetector
+  - hq
   layers:
   - Default
   - TransparentFX
@@ -21,7 +23,7 @@ TagManager:
   - 
   - 
   - Ships
-  - 
+  - Docks
   - 
   - 
   - 
