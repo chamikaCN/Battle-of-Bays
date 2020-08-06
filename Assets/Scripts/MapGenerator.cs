@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -27,7 +28,10 @@ public class MapGenerator : MonoBehaviour
     public GameObject[] OtherPrefabs;
     [Header("Region Colors")]
     public TerrainType[] regions;
+    public RawImage image;
     MeshData mapMeshData;
+    float[,] noiseMap;
+    Placement selectedDockPlacements;
     NavMeshSurface surface;
     System.Random commonRandom;
 
@@ -41,23 +45,34 @@ public class MapGenerator : MonoBehaviour
 
     }
 
+    [System.Serializable]
+    public struct Placement
+    {
+        public List<Vector3> Vectors;
+        public List<int> integers;
+    }
+
 
     public void GenerateMap(int gameSeed)
     {
+        Debug.Log("bird "+ System.DateTime.Now);
         Seed = gameSeed;
         surface = GetComponent<NavMeshSurface>();
         clearPlacedObjects();
         commonRandom = new System.Random();
 
-        float[,] noiseMap = generateNoiseMap();
+        noiseMap = generateNoiseMap();
         AddFalloffEfect(noiseMap);
+        Debug.Log("fish "+ System.DateTime.Now);
 
-        Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
-        drawTexture(texture);
+        // Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
+        // drawTexture(texture);
         mapMeshData = GenerateTerrainMesh(noiseMap, MeshHeight);
         drawMesh(mapMeshData);
         placeObjects(mapMeshData);
+        Debug.Log("cat " + System.DateTime.Now);
         surface.BuildNavMesh();
+        Debug.Log("dog "+ System.DateTime.Now);
 
     }
 
@@ -149,28 +164,20 @@ public class MapGenerator : MonoBehaviour
         return Mathf.Pow(value, a) / (Mathf.Pow(value, a) + Mathf.Pow(b - b * value, a));
     }
 
-    Texture2D heightMapToTexture(float[,] heightMap, int width, int length)
+    public void drawTexture()
     {
-        Texture2D texture = new Texture2D(width, length);
-
-        Color[] colorMap = new Color[length * width];
-
-        for (int z = 0; z < length; z++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                colorMap[z * width + x] = Color.Lerp(Color.white, Color.black, heightMap[x, z]);
-            }
-        }
-        texture.SetPixels(colorMap);
-        texture.Apply();
-
-        return createTexture(colorMap, width, length);
+        Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
+        textureRenderer.sharedMaterial.mainTexture = texture;
+        textureRenderer.transform.localScale = new Vector3(-texture.width, 1, texture.height);
+        image.texture = texture;
     }
 
     Texture2D colorMapToTexture(float[,] noiseMap, int width, int length, MapGenerator.TerrainType[] regions, int meshHeight)
     {
         Texture2D texture = new Texture2D(width, length);
+        int buttonIndex = 0;
+
+
 
         Color[] colorMap = new Color[length * width];
 
@@ -179,21 +186,28 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < width; x++)
             {
                 float currentHeight = noiseMap[x, z];
-                for (int i = 0; i < regions.Length; i++)
+                if (!selectedDockPlacements.integers.Contains(z * width + x))
                 {
-
-                    if (currentHeight <= (regions[i].Height) * 20 / meshHeight)
+                    for (int i = 0; i < regions.Length; i++)
                     {
-                        if (regions[i].BlendColors && i < regions.Length - 1)
+
+                        if (currentHeight <= (regions[i].Height) * 20 / meshHeight)
                         {
-                            colorMap[z * width + x] = Color.Lerp(regions[i].Color, regions[i + 1].Color, noiseMap[x, z]);
+                            if (regions[i].BlendColors && i < regions.Length - 1)
+                            {
+                                colorMap[z * width + x] = Color.Lerp(regions[i].Color, regions[i + 1].Color, noiseMap[x, z]);
+                            }
+                            else
+                            {
+                                colorMap[z * width + x] = regions[i].Color;
+                            }
+                            break;
                         }
-                        else
-                        {
-                            colorMap[z * width + x] = regions[i].Color;
-                        }
-                        break;
                     }
+                }else{
+                    HUDManager.instance.setupButtons(x, z, MapWidth, MapLength,buttonIndex,selectedDockPlacements.Vectors[selectedDockPlacements.integers.IndexOf(z * width + x)]);
+                    colorMap[z * width + x] = Color.red;
+                    buttonIndex++;
                 }
             }
         }
@@ -211,12 +225,6 @@ public class MapGenerator : MonoBehaviour
         texture.SetPixels(colormap);
         texture.Apply();
         return texture;
-    }
-
-    void drawTexture(Texture2D texture)
-    {
-        textureRenderer.sharedMaterial.mainTexture = texture;
-        textureRenderer.transform.localScale = new Vector3(-texture.width, 1, texture.height);
     }
 
     MeshData GenerateTerrainMesh(float[,] heightMap, int MeshHeight)
@@ -346,26 +354,50 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public List<GameObject> PlaceDocks(GameObject model, int count)
+    public GameObject placeHQ(GameObject model, int index){
+        
+        GameObject go = Instantiate(model, selectedDockPlacements.Vectors[index], Quaternion.identity);
+        go.transform.localScale = go.transform.localScale * 0.5f;
+        selectedDockPlacements.Vectors.RemoveAt(index);
+        selectedDockPlacements.integers.RemoveAt(index);
+
+        return go;
+    }
+
+    public List<GameObject> PlaceDocks(GameObject model)
     {
-        System.Random rand = new System.Random();
-        List<Vector3> dockplaces = detectSeaPlane(mapMeshData);
-        int totalCount = dockplaces.Count;
         List<GameObject> gameObjects = new List<GameObject>();
-        for (int r = 0; r < count; r++)
+        foreach (Vector3 vec in selectedDockPlacements.Vectors)
         {
-            GameObject go = Instantiate(model, dockplaces[(totalCount / count) * r], Quaternion.identity);
+            GameObject go = Instantiate(model, vec, Quaternion.identity);
             go.transform.localScale = go.transform.localScale * 0.5f;
             gameObjects.Add(go);
         }
         return gameObjects;
     }
 
-
-
-    List<Vector3> detectSeaPlane(MeshData md)
+    public void calculateDockPlacements(int count)
     {
+        System.Random rand = new System.Random();
+        Placement allSuitableDockPlacemets = detectSeaPlane(mapMeshData);
+        selectedDockPlacements = new Placement();
+        List<Vector3> selectedDockplaces = new List<Vector3>();
+        List<int> selectedDockplacesOnMap = new List<int>();
+        int totalCount = allSuitableDockPlacemets.Vectors.Count;
+        for (int r = 0; r < count; r++)
+        {
+            selectedDockplaces.Add(allSuitableDockPlacemets.Vectors[(totalCount / count) * r]);
+            selectedDockplacesOnMap.Add(allSuitableDockPlacemets.integers[(totalCount / count) * r]);
+        }
+        selectedDockPlacements.Vectors = selectedDockplaces;
+        selectedDockPlacements.integers = selectedDockplacesOnMap;
+    }
+
+    Placement detectSeaPlane(MeshData md)
+    {
+        Placement pl = new Placement();
         List<Vector3> dockplaces = new List<Vector3>();
+        List<int> dockplacesOnMap = new List<int>();
         for (int g = 0; g < MapLength * MapWidth; g++)
         {
             float x = md.vertices[g].x;
@@ -378,9 +410,13 @@ public class MapGenerator : MonoBehaviour
             if (y > 10 && getNeighbourSeaPlaneCount(md, g) > 4)
             {
                 dockplaces.Add(new Vector3(originalX, 2.5f * y, originalZ));
+                dockplacesOnMap.Add(g);
             }
         }
-        return dockplaces;
+
+        pl.Vectors = dockplaces;
+        pl.integers = dockplacesOnMap;
+        return pl;
     }
 
     int getNeighbourSeaPlaneCount(MeshData md, int index)
