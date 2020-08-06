@@ -7,14 +7,24 @@ public class Dock : MonoBehaviour
     List<Ship> enemyShips, allyShips;
     public GameController.Team dockTeam;
     Cannon cannon;
+    int maxHealth = 10, health;
+    StatusBar statusBar;
+    Canvas statusCanvas;
+    GameObject indicatorB, indicatorW;
 
     void Awake()
     {
+        statusCanvas = GetComponentInChildren<Canvas>();
+        statusBar = statusCanvas.gameObject.GetComponentInChildren<StatusBar>();
         enemyShips = new List<Ship>();
         allyShips = new List<Ship>();
+        indicatorB = transform.GetChild(2).gameObject;
+        indicatorW = transform.GetChild(3).gameObject;
     }
     void Start() {
         cannon = transform.GetChild(1).GetComponent<Cannon>();
+        statusBar.setMaxHealth(maxHealth);
+        health = maxHealth;
     }
 
     void Update()
@@ -32,17 +42,11 @@ public class Dock : MonoBehaviour
     public void addEnemyShip(Ship ship)
     {
         enemyShips.Add(ship);
-        if (enemyShips.Count > allyShips.Count+1)
-        {
-            Debug.Log("swapped teams");
-            swapTeams();
-        }
     }
 
     public void addAllyShip(Ship ship)
     {
         allyShips.Add(ship);
-        Debug.Log("new ally added " + ship.name);
     }
 
     public void removeEnemyShip(Ship ship)
@@ -52,6 +56,7 @@ public class Dock : MonoBehaviour
 
     public void removeAllyShip(Ship ship)
     {
+        ship.stopRegenarateAnim();
         allyShips.Remove(ship);
     }
 
@@ -60,14 +65,9 @@ public class Dock : MonoBehaviour
         List<Ship> temp = new List<Ship>(allyShips);
         allyShips = enemyShips;
         enemyShips = temp;
-        if (dockTeam == GameController.Team.black)
-        {
-            setTeam(GameController.Team.white);
-        }
-        else
-        {
-            setTeam(GameController.Team.black);
-        }
+        statusBar.setMaxHealth(maxHealth);
+        health = maxHealth;
+        setTeam(dockTeam == GameController.Team.black ? GameController.Team.white : GameController.Team.black);
     }
 
     public GameController.Team getTeam()
@@ -78,45 +78,18 @@ public class Dock : MonoBehaviour
     public void setTeam(GameController.Team newTeam)
     {
         dockTeam = newTeam;
-        Debug.Log("new team set "+ newTeam);
+        statusBar.setColor(newTeam == GameController.Team.black ? Color.black : Color.white);
+        indicatorB.SetActive(newTeam == GameController.Team.black ? true : false);
+        indicatorW.SetActive(newTeam == GameController.Team.white ? true : false);
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void getDamage(int damage)
     {
-        Dock dock = GetComponent<Dock>();
-        if (other.tag == "ship")
-        {
-            Ship othership = other.GetComponent<Ship>();
-            if (othership.getTeam() == dock.getTeam())
-            {
-                dock.addAllyShip(othership);
-            }
-            else if (dock.getTeam() == GameController.Team.neutral)
-            {
-                dock.setTeam(othership.getTeam());
-                dock.addAllyShip(othership);
-            }
-            else
-            {
-                dock.addEnemyShip(othership);
-            }
-        }
-    }
+        health -= damage;
+        statusBar.changeHealth(health);
 
-    private void OnTriggerExit(Collider other)
-    {
-        Dock dock = GetComponent<Dock>();
-        if (other.tag == "ship")
-        {
-            Ship othership = other.GetComponent<Ship>();
-            if (othership.getTeam() == dock.getTeam())
-            {
-                dock.removeAllyShip(othership);
-            }
-            else
-            {
-                dock.removeEnemyShip(othership);
-            }
+        if(health == 0){
+            swapTeams();
         }
     }
 
