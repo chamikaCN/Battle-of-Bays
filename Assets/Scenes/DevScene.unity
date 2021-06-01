@@ -420,11 +420,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbfb81d8c9e71974798995fb23c828c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Xdiv: 1
-  Ydiv: 1
   gamePanel: {fileID: 1552533314}
   mapPanel: {fileID: 1465080040}
   slider: {fileID: 727540796}
+  mapImage: {fileID: 1958286262}
   cameraJoystick: {fileID: 169326046}
   buttons:
   - {fileID: 1516249580}
@@ -3812,7 +3811,7 @@ MonoBehaviour:
   Seed: 998
   Scale: 20
   FallOffSpread: 10
-  textureRenderer: {fileID: 1462779597}
+  textureRenderer: {fileID: 966089536}
   meshFilter: {fileID: 1462779598}
   meshRenderer: {fileID: 1462779597}
   treeCount: 3
