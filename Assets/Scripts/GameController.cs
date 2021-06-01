@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
         gameSeed = random.Next(10000);
         generator.GenerateMap(gameSeed);
         generator.calculateDockPlacements(6);
-        generator.drawTexture();
+        generator.draw2DMapTexture();
         placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3);
         placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3);
         currentShip = placedPlayerShips[0].GetComponent<Ship>();

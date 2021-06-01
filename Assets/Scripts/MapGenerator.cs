@@ -10,7 +10,6 @@ public class MapGenerator : MonoBehaviour
     float Persistance = 0.5f, Lacunarity = 2;
     public int Seed;
     public float Scale = 20;
-    public bool AutoUpdate;
     public int FallOffSpread;
     public Renderer textureRenderer;
     public MeshFilter meshFilter;
@@ -55,7 +54,6 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap(int gameSeed)
     {
-        Debug.Log("bird "+ System.DateTime.Now);
         Seed = gameSeed;
         surface = GetComponent<NavMeshSurface>();
         clearPlacedObjects();
@@ -63,17 +61,11 @@ public class MapGenerator : MonoBehaviour
 
         noiseMap = generateNoiseMap();
         AddFalloffEfect(noiseMap);
-        Debug.Log("fish "+ System.DateTime.Now);
 
-        // Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
-        // drawTexture(texture);
         mapMeshData = GenerateTerrainMesh(noiseMap, MeshHeight);
         drawMesh(mapMeshData);
         placeObjects(mapMeshData);
-        Debug.Log("cat " + System.DateTime.Now);
         surface.BuildNavMesh();
-        Debug.Log("dog "+ System.DateTime.Now);
-
     }
 
     float[,] generateNoiseMap()
@@ -164,7 +156,7 @@ public class MapGenerator : MonoBehaviour
         return Mathf.Pow(value, a) / (Mathf.Pow(value, a) + Mathf.Pow(b - b * value, a));
     }
 
-    public void drawTexture()
+    public void draw2DMapTexture()
     {
         Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
         textureRenderer.sharedMaterial.mainTexture = texture;
