@@ -33,7 +33,6 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("tiger " + System.DateTime.Now);
         generator = GetComponent<MapGenerator>();
         random = new System.Random();
         gameSeed = random.Next(10000);
