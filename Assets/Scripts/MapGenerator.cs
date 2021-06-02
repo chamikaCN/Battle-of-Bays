@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -55,7 +56,6 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap(int gameSeed)
     {
-        Debug.Log("bird "+ System.DateTime.Now);
         Seed = gameSeed;
         surface = GetComponent<NavMeshSurface>();
         clearPlacedObjects();
@@ -63,16 +63,11 @@ public class MapGenerator : MonoBehaviour
 
         noiseMap = generateNoiseMap();
         AddFalloffEfect(noiseMap);
-        Debug.Log("fish "+ System.DateTime.Now);
 
-        // Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
-        // drawTexture(texture);
         mapMeshData = GenerateTerrainMesh(noiseMap, MeshHeight);
         drawMesh(mapMeshData);
         placeObjects(mapMeshData);
-        Debug.Log("cat " + System.DateTime.Now);
-        surface.BuildNavMesh();
-        Debug.Log("dog "+ System.DateTime.Now);
+        //surface.BuildNavMesh();
 
     }
 

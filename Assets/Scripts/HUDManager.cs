@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,17 +19,16 @@ public class HUDManager : MonoBehaviour
     }
     #endregion
 
-    public float Xdiv,Ydiv;
-    public GameObject gamePanel,mapPanel;
+    public GameObject gamePanel, mapPanel, startpanel;
     public Slider slider;
     public Joystick cameraJoystick;
-    public Button[] buttons;
+    public Button[] dockPlacementButtons;
+    public Button playbutton, quitButton, whiteButton, blackButton, okButton;
     Color32 playerCol, enemyCol;
 
     void Start()
     {
-        gamePanel.SetActive(true);
-        slider.value = 0.4f;
+        startpanel.SetActive(true);
     }
 
     void Update()
@@ -37,6 +36,17 @@ public class HUDManager : MonoBehaviour
         CameraJoystickUpdate();
         SliderValueUpdate();
         ClickUpdate();
+    }
+
+    public void StartPlay()
+    {
+        
+    }
+
+    public void LoadSelectionScreen()
+    {
+        gamePanel.SetActive(true);
+        slider.value = 0.4f;
     }
 
     void SliderValueUpdate()
@@ -111,17 +121,19 @@ public class HUDManager : MonoBehaviour
         return false;
     }
 
-    public void setupButtons(int x, int z,int width, int length, int index, Vector3 place){
+    public void setupButtons(int x, int z, int width, int length, int index, Vector3 place)
+    {
         float screenWidth = GetComponent<CanvasScaler>().referenceResolution.x;
         float screenHeight = GetComponent<CanvasScaler>().referenceResolution.y;
 
         float Xposition = (x * 1f / width) * screenWidth;
         float Yposition = (z * 1f / length) * screenHeight;
-
-        var rectTransform = buttons[index].GetComponent<RectTransform>();
-        buttons[index].GetComponent<DockButton>().setPlacement(place);
+        Debug.Log(dockPlacementButtons.Length);
+        Debug.Log(index);
+        var rectTransform = dockPlacementButtons[index].GetComponent<RectTransform>();
+        dockPlacementButtons[index].GetComponent<DockButton>().setPlacement(place);
         rectTransform.SetParent(transform.GetChild(2).GetComponent<RectTransform>());
-        rectTransform.position = new Vector2(Xposition/Xdiv, Yposition/Ydiv);
+        rectTransform.position = new Vector2(Xposition / Xdiv, Yposition / Ydiv);
     }
 
     public void selectHQ(int index)
@@ -130,12 +142,13 @@ public class HUDManager : MonoBehaviour
         mapPanel.SetActive(false);
     }
 
-    
 
-    public void TestSwapTeams(){
+
+    public void TestSwapTeams()
+    {
         GameController.instance.TestSwapTeams();
     }
 
-    
+
 
 }
