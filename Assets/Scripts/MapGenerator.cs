@@ -11,14 +11,12 @@ public class MapGenerator : MonoBehaviour
     public int Seed;
     public float Scale = 20;
     public int FallOffSpread;
-    public Renderer textureRenderer;
     public MeshFilter meshFilter;
     public MeshRenderer meshRenderer;
     public enum TreeCount { None, Low, Medium, High };
     public TreeCount treeCount;
     Hashtable treeCountNumber = new Hashtable()
                 {{ TreeCount.None, 0 }, { TreeCount.Low, 40 }, { TreeCount.Medium, 90 }, { TreeCount.High, 200 }};
-
     public GameObject[] TreePrefabs;
     public enum OthersCount { None, Low, Medium, High };
     public OthersCount otherCount;
@@ -159,8 +157,8 @@ public class MapGenerator : MonoBehaviour
     public void draw2DMapTexture()
     {
         Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
-        textureRenderer.sharedMaterial.mainTexture = texture;
-        textureRenderer.transform.localScale = new Vector3(-texture.width, 1, texture.height);
+        //textureRenderer.sharedMaterial.mainTexture = texture;
+        //textureRenderer.transform.localScale = new Vector3(-texture.width, 1, texture.height);
         image.texture = texture;
     }
 
