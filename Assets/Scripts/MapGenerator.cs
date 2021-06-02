@@ -13,7 +13,6 @@ public class MapGenerator : MonoBehaviour
     public float Scale = 20;
     public bool AutoUpdate;
     public int FallOffSpread;
-    public Renderer textureRenderer;
     public MeshFilter meshFilter;
     public MeshRenderer meshRenderer;
     public enum TreeCount { None, Low, Medium, High };
@@ -246,8 +245,6 @@ public class MapGenerator : MonoBehaviour
     public void drawTexture()
     {
         Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
-        textureRenderer.sharedMaterial.mainTexture = texture;
-        textureRenderer.transform.localScale = new Vector3(-texture.width, 1, texture.height);
         image.texture = texture;
     }
 

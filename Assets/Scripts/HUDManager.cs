@@ -41,6 +41,7 @@ public class HUDManager : MonoBehaviour
     public void StartPlay()
     {
         GameController.instance.mapGeneration();
+        startpanel.SetActive(false);
     }
 
     public void LoadSelectionScreen()

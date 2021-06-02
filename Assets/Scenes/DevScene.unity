@@ -423,16 +423,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gamePanel: {fileID: 1552533314}
   mapPanel: {fileID: 1465080040}
+  startpanel: {fileID: 1704472935}
   slider: {fileID: 727540796}
-  mapImage: {fileID: 1958286262}
   cameraJoystick: {fileID: 169326046}
-  buttons:
+  dockPlacementButtons:
   - {fileID: 1516249580}
   - {fileID: 1869415642}
   - {fileID: 816816118}
   - {fileID: 425958671}
   - {fileID: 664835780}
   - {fileID: 1886071899}
+  playbutton: {fileID: 557046982}
+  quitButton: {fileID: 871493616}
+  whiteButton: {fileID: 504159719}
+  blackButton: {fileID: 600600736}
+  okButton: {fileID: 1796597802}
 --- !u!1 &337320982
 GameObject:
   m_ObjectHideFlags: 0
@@ -1490,9 +1495,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1704472937}
-        m_MethodName: LoadGame
-        m_Mode: 5
+      - m_Target: {fileID: 257482643}
+        m_MethodName: StartPlay
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5222,7 +5227,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Seed: 998
   Scale: 20
+  AutoUpdate: 0
   FallOffSpread: 10
+  textureRenderer: {fileID: 0}
   meshFilter: {fileID: 1462779598}
   meshRenderer: {fileID: 1462779597}
   treeCount: 3
