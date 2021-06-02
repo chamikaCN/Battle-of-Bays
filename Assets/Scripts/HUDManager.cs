@@ -24,7 +24,9 @@ public class HUDManager : MonoBehaviour
     public RawImage mapImage;
     public Joystick cameraJoystick;
     public Button[] dockPlacementButtons;
-    public Button playbutton, quitButton, whiteButton, blackButton, okButton;
+    public Button[] teamSelectionButtons;
+    public Button playbutton, quitButton, okButton;
+    int selectedHQindex = -1, selectedTeamIndex = -1;
     Color32 playerCol, enemyCol;
 
     void Start()
@@ -41,9 +43,46 @@ public class HUDManager : MonoBehaviour
 
     public void StartPlay()
     {
-        GameController.instance.mapGeneration();
+        GameController.instance.MapGeneration();
         mapPanel.SetActive(true);
         startpanel.SetActive(false);
+    }
+
+    public void SelectHQButton(int index)
+    {
+        if (selectedHQindex != index)
+        {
+            if (selectedHQindex > -1)
+            {
+                dockPlacementButtons[selectedHQindex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
+            }
+            selectedHQindex = index;
+            dockPlacementButtons[selectedHQindex].GetComponent<RectTransform>().localScale = new Vector3(1.5f, 1.5f, 0);
+        }
+    }
+
+    public void SelectTeamButton(int index)
+    {
+        if (selectedTeamIndex != index)
+        {
+            if (selectedTeamIndex > -1)
+            {
+            teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
+            }
+            selectedTeamIndex = index;
+            teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1.15f, 1.15f, 0);
+        }
+    }
+
+    public void CompleteSelection()
+    {
+        if (selectedHQindex + selectedTeamIndex > -1)
+        {
+            GameController.instance.setTeam(selectedTeamIndex == 0 ? GameController.Team.white : GameController.Team.black);
+            GameController.instance.selectHQ(selectedHQindex);
+            GameController.instance.ObjectPlacement();
+            mapPanel.SetActive(false);
+        }
     }
 
     public void LoadSelectionScreen()
@@ -128,7 +167,7 @@ public class HUDManager : MonoBehaviour
     {
         Vector3[] mapCorners = new Vector3[4];
         mapImage.GetComponent<RectTransform>().GetWorldCorners(mapCorners);
-        
+
         float Xposition = (x * 1f / width) * (mapCorners[3].x - mapCorners[0].x) + mapCorners[0].x;
         float Yposition = (z * 1f / length) * (mapCorners[1].y - mapCorners[0].y) + mapCorners[0].y;
 
@@ -137,14 +176,6 @@ public class HUDManager : MonoBehaviour
         rectTransform.SetParent(transform.GetChild(2).GetComponent<RectTransform>());
         rectTransform.position = new Vector2(Xposition, Yposition);
     }
-
-    public void selectHQ(int index)
-    {
-        GameController.instance.selectHQ(index);
-        mapPanel.SetActive(false);
-    }
-
-
 
     public void TestSwapTeams()
     {

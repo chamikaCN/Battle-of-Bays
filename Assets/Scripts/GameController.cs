@@ -14,8 +14,6 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        setTeam(PlayerPrefs.GetString("Team", "Black") == "Black" ? Team.black : Team.white);
-
         instance = this;
     }
     #endregion
@@ -31,7 +29,7 @@ public class GameController : MonoBehaviour
     GameObject playerHQ, EnemyHQ;
     Ship currentShip;
 
-    public void mapGeneration()
+    public void MapGeneration()
     {
         generator = GetComponent<MapGenerator>();
         random = new System.Random();
@@ -41,8 +39,9 @@ public class GameController : MonoBehaviour
         generator.drawTexture();
     }
 
-    public void mapgenPart2()
+    public void ObjectPlacement()
     {
+        //navmesh should be built before ship placement
         placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3);
         placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3);
         currentShip = placedPlayerShips[0].GetComponent<Ship>();
@@ -140,7 +139,7 @@ public class GameController : MonoBehaviour
 
     public GameController.Team getTeam() { return playerTeam; }
 
-    void setTeam(Team team)
+    public void setTeam(Team team)
     {
         playerTeam = team;
     }
