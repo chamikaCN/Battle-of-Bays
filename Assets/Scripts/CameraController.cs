@@ -40,14 +40,14 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        Vector3 additionVector = target.position + offset * currrentZoom;
-        Mathf.Clamp(additionVector.y, 1.5f, 6f);
-        transform.position = additionVector;
-        transform.LookAt(target.position + Vector3.up * pitch);
+        // Vector3 additionVector = target.position + offset * currrentZoom;
+        // Mathf.Clamp(additionVector.y, 1.5f, 6f);
+        // transform.position = additionVector;
+        // transform.LookAt(target.position + Vector3.up * pitch);
 
-        transform.RotateAround(target.position, Vector3.up, currentYaw);
-        currentUpdown = Mathf.Clamp(currentUpdown, 0f, 15f);
-        transform.RotateAround(target.position, transform.right, currentUpdown);
+        // transform.RotateAround(target.position, Vector3.up, currentYaw);
+        // currentUpdown = Mathf.Clamp(currentUpdown, 0f, 15f);
+        // transform.RotateAround(target.position, transform.right, currentUpdown);
     }
 
     public void setTransform(Transform transform)
