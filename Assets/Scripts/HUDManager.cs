@@ -40,7 +40,7 @@ public class HUDManager : MonoBehaviour
 
     public void StartPlay()
     {
-        
+        GameController.instance.mapGeneration();
     }
 
     public void LoadSelectionScreen()
@@ -128,12 +128,10 @@ public class HUDManager : MonoBehaviour
 
         float Xposition = (x * 1f / width) * screenWidth;
         float Yposition = (z * 1f / length) * screenHeight;
-        Debug.Log(dockPlacementButtons.Length);
-        Debug.Log(index);
         var rectTransform = dockPlacementButtons[index].GetComponent<RectTransform>();
         dockPlacementButtons[index].GetComponent<DockButton>().setPlacement(place);
         rectTransform.SetParent(transform.GetChild(2).GetComponent<RectTransform>());
-        rectTransform.position = new Vector2(Xposition / Xdiv, Yposition / Ydiv);
+        rectTransform.position = new Vector2(Xposition, Yposition);
     }
 
     public void selectHQ(int index)

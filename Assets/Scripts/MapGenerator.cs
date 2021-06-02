@@ -68,7 +68,6 @@ public class MapGenerator : MonoBehaviour
         drawMesh(mapMeshData);
         placeObjects(mapMeshData);
         //surface.BuildNavMesh();
-
     }
 
     void clearPlacedObjects()

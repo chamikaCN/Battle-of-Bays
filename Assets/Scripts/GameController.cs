@@ -31,15 +31,18 @@ public class GameController : MonoBehaviour
     GameObject playerHQ, EnemyHQ;
     Ship currentShip;
 
-    void Start()
+    public void mapGeneration()
     {
-        Debug.Log("tiger " + System.DateTime.Now);
         generator = GetComponent<MapGenerator>();
         random = new System.Random();
         gameSeed = random.Next(10000);
         generator.GenerateMap(gameSeed);
         generator.calculateDockPlacements(6);
         generator.drawTexture();
+    }
+
+    public void mapgenPart2()
+    {
         placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3);
         placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3);
         currentShip = placedPlayerShips[0].GetComponent<Ship>();
