@@ -425,6 +425,7 @@ MonoBehaviour:
   mapPanel: {fileID: 1465080040}
   startpanel: {fileID: 1704472935}
   slider: {fileID: 727540796}
+  mapImage: {fileID: 1958286262}
   cameraJoystick: {fileID: 169326046}
   dockPlacementButtons:
   - {fileID: 1516249580}
@@ -5227,7 +5228,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Seed: 998
   Scale: 20
-  AutoUpdate: 0
   FallOffSpread: 10
   textureRenderer: {fileID: 0}
   meshFilter: {fileID: 1462779598}

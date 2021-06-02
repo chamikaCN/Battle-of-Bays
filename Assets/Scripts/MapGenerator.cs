@@ -11,7 +11,6 @@ public class MapGenerator : MonoBehaviour
     float Persistance = 0.5f, Lacunarity = 2;
     public int Seed;
     public float Scale = 20;
-    public bool AutoUpdate;
     public int FallOffSpread;
     public MeshFilter meshFilter;
     public MeshRenderer meshRenderer;
@@ -19,7 +18,6 @@ public class MapGenerator : MonoBehaviour
     public TreeCount treeCount;
     Hashtable treeCountNumber = new Hashtable()
                 {{ TreeCount.None, 0 }, { TreeCount.Low, 40 }, { TreeCount.Medium, 90 }, { TreeCount.High, 200 }};
-
     public GameObject[] TreePrefabs;
     public enum OthersCount { None, Low, Medium, High };
     public OthersCount otherCount;

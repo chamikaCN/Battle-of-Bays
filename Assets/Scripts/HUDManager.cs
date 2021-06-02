@@ -21,6 +21,7 @@ public class HUDManager : MonoBehaviour
 
     public GameObject gamePanel, mapPanel, startpanel;
     public Slider slider;
+    public RawImage mapImage;
     public Joystick cameraJoystick;
     public Button[] dockPlacementButtons;
     public Button playbutton, quitButton, whiteButton, blackButton, okButton;
@@ -124,13 +125,14 @@ public class HUDManager : MonoBehaviour
 
     public void setupButtons(int x, int z, int width, int length, int index, Vector3 place)
     {
-        float screenWidth = GetComponent<CanvasScaler>().referenceResolution.x;
-        float screenHeight = GetComponent<CanvasScaler>().referenceResolution.y;
+        Vector3[] mapCorners = new Vector3[4];
+        mapImage.GetComponent<RectTransform>().GetWorldCorners(mapCorners);
+        
+        float Xposition = (x * 1f / width) * (mapCorners[3].x - mapCorners[0].x) + mapCorners[0].x;
+        float Yposition = (z * 1f / length) * (mapCorners[1].y - mapCorners[0].y) + mapCorners[0].y;
 
-        float Xposition = (x * 1f / width) * screenWidth;
-        float Yposition = (z * 1f / length) * screenHeight;
-        var rectTransform = dockPlacementButtons[index].GetComponent<RectTransform>();
-        dockPlacementButtons[index].GetComponent<DockButton>().setPlacement(place);
+        var rectTransform = buttons[index].GetComponent<RectTransform>();
+        buttons[index].GetComponent<DockButton>().setPlacement(place);
         rectTransform.SetParent(transform.GetChild(2).GetComponent<RectTransform>());
         rectTransform.position = new Vector2(Xposition, Yposition);
     }
