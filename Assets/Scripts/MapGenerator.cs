@@ -71,6 +71,22 @@ public class MapGenerator : MonoBehaviour
 
     }
 
+    void clearPlacedObjects()
+    {
+        GameObject veg = GameObject.Find("Vegitation");
+        int childCount = veg.transform.childCount;
+        for (int m = 0; m < childCount; m++)
+        {
+            DestroyImmediate(veg.transform.GetChild(0).gameObject);
+        }
+        GameObject oth = GameObject.Find("OtherObjects");
+        int childObCount = oth.transform.childCount;
+        for (int m = 0; m < childObCount; m++)
+        {
+            DestroyImmediate(oth.transform.GetChild(0).gameObject);
+        }
+    }
+
     float[,] generateNoiseMap()
     {
         float[,] noiseMap = new float[MapWidth, MapLength];
@@ -159,6 +175,75 @@ public class MapGenerator : MonoBehaviour
         return Mathf.Pow(value, a) / (Mathf.Pow(value, a) + Mathf.Pow(b - b * value, a));
     }
 
+    MeshData GenerateTerrainMesh(float[,] heightMap, int MeshHeight)
+    {
+        int width = heightMap.GetLength(0);
+        int length = heightMap.GetLength(1);
+
+        float topLeftX = (width - 1) / -2f;
+        float topLeftZ = (length - 1) / 2f;
+
+        MeshData meshData = new MeshData(width, length);
+        int vertexIndex = 0;
+
+        for (int z = 0; z < length; z++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, MeshHeight * heightMap[x, z], topLeftZ - z);
+                meshData.UVs[vertexIndex] = new Vector2(x / (float)width, z / (float)length);
+                if (x < width - 1 && z < length - 1)
+                {
+                    meshData.addTriangle(vertexIndex, vertexIndex + width + 1, vertexIndex + width);
+                    meshData.addTriangle(vertexIndex + width + 1, vertexIndex, vertexIndex + 1);
+                }
+                vertexIndex++;
+            }
+        }
+        return meshData;
+    }
+
+    void drawMesh(MeshData meshData)
+    {
+        Mesh m = meshData.CreateMesh();
+        meshFilter.sharedMesh = m;
+        meshColliderGenerator.instance.setMesh(m);
+    }
+
+    void placeObjects(MeshData md)
+    {
+        System.Random rand = new System.Random();
+        int m = 0, n = 0;
+        while (m < (int)(treeCountNumber[treeCount]) || n < (int)(otherCountNumber[otherCount]))
+        {
+            int val = rand.Next(MapLength * MapWidth);
+            float x = md.vertices[val].x;
+            float z = md.vertices[val].z;
+            float y = md.vertices[val].y;
+
+            float originalX = 5 * (x);
+            float originalZ = 5 * (z);
+
+            if (y > 11 && m < (int)(treeCountNumber[treeCount]))
+            {
+                int vegIndex = rand.Next(TreePrefabs.Length);
+                GameObject go = Instantiate(TreePrefabs[vegIndex], new Vector3(originalX, (2.5f * y) + 2, originalZ), Quaternion.identity);
+                go.transform.localScale = go.transform.localScale * 0.3f;
+                go.transform.parent = GameObject.Find("Vegitation").transform;
+                m++;
+            }
+            else if ((y < 10) && (x > (-MapWidth / 2) + 8) && (x < (MapWidth / 2) - 8) && (z > (-MapLength / 2) + 8) && (z < (MapLength / 2) - 8) && n < (int)(otherCountNumber[otherCount]))
+            {
+                int otherIndex = rand.Next(OtherPrefabs.Length);
+                GameObject go = Instantiate(OtherPrefabs[otherIndex], new Vector3(originalX, (2.5f * 10) - 5, originalZ), Quaternion.identity);
+                go.transform.localScale = go.transform.localScale * 0.5f;
+                go.transform.parent = GameObject.Find("OtherObjects").transform;
+                n++;
+            }
+
+        }
+    }
+
     public void drawTexture()
     {
         Texture2D texture = colorMapToTexture(noiseMap, MapWidth, MapLength, regions, MeshHeight);
@@ -171,8 +256,6 @@ public class MapGenerator : MonoBehaviour
     {
         Texture2D texture = new Texture2D(width, length);
         int buttonIndex = 0;
-
-
 
         Color[] colorMap = new Color[length * width];
 
@@ -220,155 +303,6 @@ public class MapGenerator : MonoBehaviour
         texture.SetPixels(colormap);
         texture.Apply();
         return texture;
-    }
-
-    MeshData GenerateTerrainMesh(float[,] heightMap, int MeshHeight)
-    {
-        int width = heightMap.GetLength(0);
-        int length = heightMap.GetLength(1);
-
-        float topLeftX = (width - 1) / -2f;
-        float topLeftZ = (length - 1) / 2f;
-
-        MeshData meshData = new MeshData(width, length);
-        int vertexIndex = 0;
-
-        for (int z = 0; z < length; z++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, MeshHeight * heightMap[x, z], topLeftZ - z);
-                meshData.UVs[vertexIndex] = new Vector2(x / (float)width, z / (float)length);
-                if (x < width - 1 && z < length - 1)
-                {
-                    meshData.addTriangle(vertexIndex, vertexIndex + width + 1, vertexIndex + width);
-                    meshData.addTriangle(vertexIndex + width + 1, vertexIndex, vertexIndex + 1);
-                }
-                vertexIndex++;
-            }
-        }
-        return meshData;
-    }
-
-    void drawMesh(MeshData meshData)
-    {
-        Mesh m = meshData.CreateMesh();
-        meshFilter.sharedMesh = m;
-        meshColliderGenerator.instance.setMesh(m);
-    }
-
-    void OnValidate()
-    {
-        if (MapWidth < 1) { MapWidth = 1; }
-        if (MapLength < 1) { MapLength = 1; }
-        if (Lacunarity < 1) { Lacunarity = 1; }
-        if (Octaves < 0) { Octaves = 0; }
-        if (MapWidth < 1) { MapWidth = 1; }
-    }
-
-    void clearPlacedObjects()
-    {
-        GameObject veg = GameObject.Find("Vegitation");
-        int childCount = veg.transform.childCount;
-        for (int m = 0; m < childCount; m++)
-        {
-            DestroyImmediate(veg.transform.GetChild(0).gameObject);
-        }
-        GameObject oth = GameObject.Find("OtherObjects");
-        int childObCount = oth.transform.childCount;
-        for (int m = 0; m < childObCount; m++)
-        {
-            DestroyImmediate(oth.transform.GetChild(0).gameObject);
-        }
-    }
-
-    void placeObjects(MeshData md)
-    {
-        System.Random rand = new System.Random();
-        int m = 0, n = 0;
-        while (m < (int)(treeCountNumber[treeCount]) || n < (int)(otherCountNumber[otherCount]))
-        {
-            int val = rand.Next(MapLength * MapWidth);
-            float x = md.vertices[val].x;
-            float z = md.vertices[val].z;
-            float y = md.vertices[val].y;
-
-            float originalX = 5 * (x);
-            float originalZ = 5 * (z);
-
-            if (y > 11 && m < (int)(treeCountNumber[treeCount]))
-            {
-                int vegIndex = rand.Next(TreePrefabs.Length);
-                GameObject go = Instantiate(TreePrefabs[vegIndex], new Vector3(originalX, (2.5f * y) + 2, originalZ), Quaternion.identity);
-                go.transform.localScale = go.transform.localScale * 0.3f;
-                go.transform.parent = GameObject.Find("Vegitation").transform;
-                m++;
-            }
-            else if ((y < 10) && (x > (-MapWidth / 2) + 8) && (x < (MapWidth / 2) - 8) && (z > (-MapLength / 2) + 8) && (z < (MapLength / 2) - 8) && n < (int)(otherCountNumber[otherCount]))
-            {
-                int otherIndex = rand.Next(OtherPrefabs.Length);
-                GameObject go = Instantiate(OtherPrefabs[otherIndex], new Vector3(originalX, (2.5f * 10) - 5, originalZ), Quaternion.identity);
-                go.transform.localScale = go.transform.localScale * 0.5f;
-                go.transform.parent = GameObject.Find("OtherObjects").transform;
-                n++;
-            }
-
-        }
-    }
-
-    public List<GameObject> PlaceShips(GameObject model, int count)
-    {
-        List<GameObject> gameObjects = new List<GameObject>();
-        for (int r = 0; r < count; r++)
-        {
-            Vector3 place = getValidShipPlacement(commonRandom);
-            GameObject go = Instantiate(model, place, Quaternion.identity);
-            go.transform.localScale = go.transform.localScale * 0.5f;
-            gameObjects.Add(go);
-        }
-        return gameObjects;
-    }
-
-    Vector3 getValidShipPlacement(System.Random random)
-    {
-        int val = random.Next(MapLength * MapWidth);
-        float x = mapMeshData.vertices[val].x;
-        float z = mapMeshData.vertices[val].z;
-        float y = mapMeshData.vertices[val].y;
-
-        float originalX = 5 * (x);
-        float originalZ = 5 * (z);
-
-        if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7)
-        {
-            return new Vector3(originalX, 10, originalZ);
-        }
-        else
-        {
-            return getValidShipPlacement(random);
-        }
-    }
-
-    public GameObject placeHQ(GameObject model, int index){
-        
-        GameObject go = Instantiate(model, selectedDockPlacements.Vectors[index], Quaternion.identity);
-        go.transform.localScale = go.transform.localScale * 0.5f;
-        selectedDockPlacements.Vectors.RemoveAt(index);
-        selectedDockPlacements.integers.RemoveAt(index);
-
-        return go;
-    }
-
-    public List<GameObject> PlaceDocks(GameObject model)
-    {
-        List<GameObject> gameObjects = new List<GameObject>();
-        foreach (Vector3 vec in selectedDockPlacements.Vectors)
-        {
-            GameObject go = Instantiate(model, vec, Quaternion.identity);
-            go.transform.localScale = go.transform.localScale * 0.5f;
-            gameObjects.Add(go);
-        }
-        return gameObjects;
     }
 
     public void calculateDockPlacements(int count)
@@ -429,6 +363,61 @@ public class MapGenerator : MonoBehaviour
             if (md.vertices[index + MapWidth + 1].y < 10) { count++; }
         }
         return count;
+    }
+
+    public List<GameObject> PlaceShips(GameObject model, int count)
+    {
+        List<GameObject> gameObjects = new List<GameObject>();
+        for (int r = 0; r < count; r++)
+        {
+            Vector3 place = getValidShipPlacement(commonRandom);
+            GameObject go = Instantiate(model, place, Quaternion.identity);
+            go.transform.localScale = go.transform.localScale * 0.5f;
+            gameObjects.Add(go);
+        }
+        return gameObjects;
+    }
+
+    Vector3 getValidShipPlacement(System.Random random)
+    {
+        int val = random.Next(MapLength * MapWidth);
+        float x = mapMeshData.vertices[val].x;
+        float z = mapMeshData.vertices[val].z;
+        float y = mapMeshData.vertices[val].y;
+
+        float originalX = 5 * (x);
+        float originalZ = 5 * (z);
+
+        if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7)
+        {
+            return new Vector3(originalX, 10, originalZ);
+        }
+        else
+        {
+            return getValidShipPlacement(random);
+        }
+    }
+
+    public GameObject placeHQ(GameObject model, int index){
+        
+        GameObject go = Instantiate(model, selectedDockPlacements.Vectors[index], Quaternion.identity);
+        go.transform.localScale = go.transform.localScale * 0.5f;
+        selectedDockPlacements.Vectors.RemoveAt(index);
+        selectedDockPlacements.integers.RemoveAt(index);
+
+        return go;
+    }
+
+    public List<GameObject> PlaceDocks(GameObject model)
+    {
+        List<GameObject> gameObjects = new List<GameObject>();
+        foreach (Vector3 vec in selectedDockPlacements.Vectors)
+        {
+            GameObject go = Instantiate(model, vec, Quaternion.identity);
+            go.transform.localScale = go.transform.localScale * 0.5f;
+            gameObjects.Add(go);
+        }
+        return gameObjects;
     }
 
 }
