@@ -17,7 +17,7 @@ public class MapGenerator : MonoBehaviour
     public enum TreeCount { None, Low, Medium, High };
     public TreeCount treeCount;
     Hashtable treeCountNumber = new Hashtable()
-                {{ TreeCount.None, 0 }, { TreeCount.Low, 40 }, { TreeCount.Medium, 90 }, { TreeCount.High, 200 }};
+                {{ TreeCount.None, 0 }, { TreeCount.Low, 40 }, { TreeCount.Medium, 150 }, { TreeCount.High, 400 }};
     public GameObject[] TreePrefabs;
     public enum OthersCount { None, Low, Medium, High };
     public OthersCount otherCount;
