@@ -64,7 +64,6 @@ public class MapGenerator : MonoBehaviour
         mapMeshData = GenerateTerrainMesh(noiseMap, MeshHeight);
         drawMesh(mapMeshData);
         placeObjects(mapMeshData);
-        //surface.BuildNavMesh();
     }
 
     void clearPlacedObjects()
@@ -363,7 +362,7 @@ public class MapGenerator : MonoBehaviour
 
     public void BuildNavmesh()
     {
-
+        surface.BuildNavMesh();
     }
 
     public List<GameObject> PlaceShips(GameObject model, int count)

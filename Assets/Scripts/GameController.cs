@@ -39,9 +39,10 @@ public class GameController : MonoBehaviour
         generator.drawTexture();
     }
 
+
     public void ObjectPlacement()
     {
-        //navmesh should be built before ship placement
+        generator.BuildNavmesh();
         placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3);
         placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3);
         currentShip = placedPlayerShips[0].GetComponent<Ship>();
