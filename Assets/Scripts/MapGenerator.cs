@@ -365,12 +365,12 @@ public class MapGenerator : MonoBehaviour
         surface.BuildNavMesh();
     }
 
-    public List<GameObject> PlaceShips(GameObject model, int count)
+    public List<GameObject> PlaceShips(GameObject model, int count, Vector3 hqLocation)
     {
         List<GameObject> gameObjects = new List<GameObject>();
         for (int r = 0; r < count; r++)
         {
-            Vector3 place = getValidShipPlacement(commonRandom);
+            Vector3 place = getValidShipPlacement(commonRandom, hqLocation);
             GameObject go = Instantiate(model, place, Quaternion.identity);
             go.transform.localScale = go.transform.localScale * 0.3f;
             gameObjects.Add(go);
@@ -379,8 +379,9 @@ public class MapGenerator : MonoBehaviour
     }
 
 
-    Vector3 getValidShipPlacement(System.Random random)
+    Vector3 getValidShipPlacement(System.Random random, Vector3 hqLocation)
     {
+        //this random should be replaced by HQ near value priority system.
         int val = random.Next(MapLength * MapWidth);
         float x = mapMeshData.vertices[val].x;
         float z = mapMeshData.vertices[val].z;
@@ -388,14 +389,15 @@ public class MapGenerator : MonoBehaviour
 
         float originalX = 5 * (x);
         float originalZ = 5 * (z);
-
-        if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7)
+        float distanceSquared = Mathf.Pow((originalX - hqLocation.x), 2) + Mathf.Pow((originalZ - hqLocation.z), 2);
+        Debug.Log(distanceSquared);
+        if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7 && distanceSquared <10000)
         {
             return new Vector3(originalX, 10, originalZ);
         }
         else
         {
-            return getValidShipPlacement(random);
+            return getValidShipPlacement(random, hqLocation);
         }
     }
 
