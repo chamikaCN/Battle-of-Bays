@@ -372,7 +372,7 @@ public class MapGenerator : MonoBehaviour
         {
             Vector3 place = getValidShipPlacement(commonRandom);
             GameObject go = Instantiate(model, place, Quaternion.identity);
-            go.transform.localScale = go.transform.localScale * 0.5f;
+            go.transform.localScale = go.transform.localScale * 0.3f;
             gameObjects.Add(go);
         }
         return gameObjects;
@@ -421,7 +421,6 @@ public class MapGenerator : MonoBehaviour
         }
         return gameObjects;
     }
-
 }
 
 
