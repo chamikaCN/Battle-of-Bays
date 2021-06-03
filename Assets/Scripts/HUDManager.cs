@@ -19,7 +19,7 @@ public class HUDManager : MonoBehaviour
     }
     #endregion
 
-    public GameObject gamePanel, mapPanel, startpanel;
+    public GameObject gamePanel, mapPanel, startPanel, loadingPanel;
     public Slider slider;
     public RawImage mapImage;
     public Joystick cameraJoystick;
@@ -31,7 +31,7 @@ public class HUDManager : MonoBehaviour
 
     void Start()
     {
-        startpanel.SetActive(true);
+        startPanel.SetActive(true);
     }
 
     void Update()
@@ -43,9 +43,11 @@ public class HUDManager : MonoBehaviour
 
     public void StartPlay()
     {
+        loadingPanel.SetActive(true);
+        startPanel.SetActive(false);
         GameController.instance.MapGeneration();
         mapPanel.SetActive(true);
-        startpanel.SetActive(false);
+        loadingPanel.SetActive(false);
     }
 
     public void SelectHQButton(int index)
@@ -67,7 +69,7 @@ public class HUDManager : MonoBehaviour
         {
             if (selectedTeamIndex > -1)
             {
-            teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
+                teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
             }
             selectedTeamIndex = index;
             teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1.15f, 1.15f, 0);
@@ -78,17 +80,16 @@ public class HUDManager : MonoBehaviour
     {
         if (selectedHQindex + selectedTeamIndex > -1)
         {
+            loadingPanel.SetActive(true);
+            mapPanel.SetActive(false);
             GameController.instance.setTeam(selectedTeamIndex == 0 ? GameController.Team.white : GameController.Team.black);
             GameController.instance.selectHQ(selectedHQindex);
             GameController.instance.ObjectPlacement();
-            mapPanel.SetActive(false);
-        }
-    }
+            gamePanel.SetActive(true);
+            loadingPanel.SetActive(false);
+            slider.value = 0.4f;
 
-    public void LoadSelectionScreen()
-    {
-        gamePanel.SetActive(true);
-        slider.value = 0.4f;
+        }
     }
 
     void SliderValueUpdate()
