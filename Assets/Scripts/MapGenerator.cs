@@ -32,6 +32,7 @@ public class MapGenerator : MonoBehaviour
     Placement selectedDockPlacements;
     NavMeshSurface surface;
     System.Random commonRandom;
+    int playerHQPos, enemyHQPos;
 
     [System.Serializable]
     public struct TerrainType
@@ -391,7 +392,7 @@ public class MapGenerator : MonoBehaviour
         float originalZ = 5 * (z);
         float distanceSquared = Mathf.Pow((originalX - hqLocation.x), 2) + Mathf.Pow((originalZ - hqLocation.z), 2);
         Debug.Log(distanceSquared);
-        if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7 && distanceSquared <10000)
+        if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7 && distanceSquared < 10000)
         {
             return new Vector3(originalX, 10, originalZ);
         }
@@ -401,14 +402,22 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public GameObject placeHQ(GameObject model, int index)
+    public GameObject placeHQ(GameObject model, int index, Boolean isPlayerHQ)
     {
-
+        if (isPlayerHQ)
+        {
+            playerHQPos = selectedDockPlacements.integers[index];
+            Debug.Log(playerHQPos);
+        }
+        else
+        {
+            enemyHQPos = selectedDockPlacements.integers[index];
+            Debug.Log(enemyHQPos);
+        }
         GameObject go = Instantiate(model, selectedDockPlacements.Vectors[index], Quaternion.identity);
         go.transform.localScale = go.transform.localScale * 0.5f;
         selectedDockPlacements.Vectors.RemoveAt(index);
         selectedDockPlacements.integers.RemoveAt(index);
-
         return go;
     }
 

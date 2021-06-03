@@ -53,8 +53,8 @@ public class GameController : MonoBehaviour
 
     public void selectHQ(int index)
     {
-        playerHQ = generator.placeHQ(playerTeam == Team.black ? blackHQ : whiteHQ, index);
-        EnemyHQ = generator.placeHQ(playerTeam == Team.black ? whiteHQ : blackHQ, index < 3 ? 4 : 0);
+        playerHQ = generator.placeHQ(playerTeam == Team.black ? blackHQ : whiteHQ, index, true);
+        EnemyHQ = generator.placeHQ(playerTeam == Team.black ? whiteHQ : blackHQ, index < 3 ? 4 : 0, false);
         placedDocks = generator.PlaceDocks(dock);
     }
 
