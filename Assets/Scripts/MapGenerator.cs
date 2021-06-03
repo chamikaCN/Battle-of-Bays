@@ -276,8 +276,10 @@ public class MapGenerator : MonoBehaviour
                             break;
                         }
                     }
-                }else{
-                    HUDManager.instance.setupButtons(x, z, MapWidth, MapLength,buttonIndex,selectedDockPlacements.Vectors[selectedDockPlacements.integers.IndexOf(z * width + x)]);
+                }
+                else
+                {
+                    HUDManager.instance.setupButtons(x, z, MapWidth, MapLength, buttonIndex, selectedDockPlacements.Vectors[selectedDockPlacements.integers.IndexOf(z * width + x)]);
                     colorMap[z * width + x] = Color.red;
                     buttonIndex++;
                 }
@@ -359,6 +361,11 @@ public class MapGenerator : MonoBehaviour
         return count;
     }
 
+    public void BuildNavmesh()
+    {
+
+    }
+
     public List<GameObject> PlaceShips(GameObject model, int count)
     {
         List<GameObject> gameObjects = new List<GameObject>();
@@ -371,6 +378,7 @@ public class MapGenerator : MonoBehaviour
         }
         return gameObjects;
     }
+
 
     Vector3 getValidShipPlacement(System.Random random)
     {
@@ -392,8 +400,9 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public GameObject placeHQ(GameObject model, int index){
-        
+    public GameObject placeHQ(GameObject model, int index)
+    {
+
         GameObject go = Instantiate(model, selectedDockPlacements.Vectors[index], Quaternion.identity);
         go.transform.localScale = go.transform.localScale * 0.5f;
         selectedDockPlacements.Vectors.RemoveAt(index);
