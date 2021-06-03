@@ -43,8 +43,8 @@ public class GameController : MonoBehaviour
     public void ObjectPlacement()
     {
         generator.BuildNavmesh();
-        placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3);
-        placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3);
+        placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3, playerHQ.transform.position);
+        placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3, EnemyHQ.transform.position);
         currentShip = placedPlayerShips[0].GetComponent<Ship>();
         CameraController.instance.setTransform(currentShip.transform);
         currentShip.activatePlayerControl();
@@ -54,7 +54,7 @@ public class GameController : MonoBehaviour
     public void selectHQ(int index)
     {
         playerHQ = generator.placeHQ(playerTeam == Team.black ? blackHQ : whiteHQ, index);
-        EnemyHQ = generator.placeHQ(playerTeam == Team.black ? whiteHQ : blackHQ, random.Next(0, 5));
+        EnemyHQ = generator.placeHQ(playerTeam == Team.black ? whiteHQ : blackHQ, index < 3 ? 4 : 0);
         placedDocks = generator.PlaceDocks(dock);
     }
 
