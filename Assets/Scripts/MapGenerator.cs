@@ -44,14 +44,23 @@ public class MapGenerator : MonoBehaviour
         public float Height;
         public Color Color;
         public bool BlendColors;
+        public TerrainType(string name, float height, Color color, bool Blend)
+        {
+            this.Name = name;
+            this.Height = height;
+            this.Color = color;
+            this.BlendColors = Blend;
+        }
 
     }
 
     [System.Serializable]
-    public struct Placement
+    public class Placement
     {
-        public Vector3 Vector;
-        public int integer;
+        public Vector3 Vector { get; set; }
+        public int integer { get; set; }
+        public float distance { get; set; }
+        
     }
 
 
@@ -306,15 +315,31 @@ public class MapGenerator : MonoBehaviour
 
     public void calculateDockPlacements(int count)
     {
-        System.Random rand = new System.Random();
         List<Placement> allSuitableDockPlacemets = detectSeaPlane(mapMeshData);
+        Debug.Log("All suitable count "+allSuitableDockPlacemets.Count);
         selectedDockPlacements = new List<Placement>();
-        List<Vector3> selectedDockplaces = new List<Vector3>();
-        List<int> selectedDockplacesOnMap = new List<int>();
-        int totalCount = allSuitableDockPlacemets.Count;
-        for (int r = 0; r < count; r++)
+        selectedDockPlacements.Add(allSuitableDockPlacemets[0]);
+        int currentPosInt = allSuitableDockPlacemets[0].integer;
+        allSuitableDockPlacemets.RemoveAt(0);
+        Debug.Log("first position " + currentPosInt);
+        for (int r = 0; r < (count - 1); r++)
         {
-            selectedDockPlacements.Add(allSuitableDockPlacemets[(totalCount / count) * r]);
+            float maxScore = 0;
+            int maxScoreIndex = 0;
+            for (int i = 0; i < allSuitableDockPlacemets.Count; i++)
+            {
+                float distScore = allSuitableDockPlacemets[i].distance + getDistanceBetweenMapIntergers(allSuitableDockPlacemets[i].integer, currentPosInt, MapWidth);
+                allSuitableDockPlacemets[i].distance = distScore;
+                if (distScore > maxScore)
+                {
+                    maxScore = distScore;
+                    maxScoreIndex = i;
+                }
+            }
+            currentPosInt = allSuitableDockPlacemets[maxScoreIndex].integer;
+            Debug.Log("loop " + r + " Score " + maxScore + " index " + maxScoreIndex + " mapPos " + currentPosInt);
+            selectedDockPlacements.Add(allSuitableDockPlacemets[maxScoreIndex]);
+            allSuitableDockPlacemets.RemoveAt(maxScoreIndex);
         }
         selectedPlacementIntegers = selectedDockPlacements.Select(p => p.integer).ToList();
         selectedPlacementVectors = selectedDockPlacements.Select(p => p.Vector).ToList();
@@ -337,6 +362,7 @@ public class MapGenerator : MonoBehaviour
                 Placement p = new Placement();
                 p.Vector = new Vector3(originalX, 2.5f * y, originalZ);
                 p.integer = g;
+                p.distance = 0;
                 pl.Add(p);
             }
         }
@@ -389,7 +415,6 @@ public class MapGenerator : MonoBehaviour
         float originalX = 5 * (x);
         float originalZ = 5 * (z);
         float distanceSquared = Mathf.Pow((originalX - hqLocation.x), 2) + Mathf.Pow((originalZ - hqLocation.z), 2);
-        Debug.Log(distanceSquared);
         if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7 && distanceSquared < 10000)
         {
             return new Vector3(originalX, 10, originalZ);
@@ -405,12 +430,10 @@ public class MapGenerator : MonoBehaviour
         if (isPlayerHQ)
         {
             playerHQPos = selectedPlacementIntegers[index];
-            Debug.Log(playerHQPos);
         }
         else
         {
             enemyHQPos = selectedPlacementIntegers[index];
-            Debug.Log(enemyHQPos);
         }
         GameObject go = Instantiate(model, selectedPlacementVectors[index], Quaternion.identity);
         go.transform.localScale = go.transform.localScale * 0.5f;
@@ -430,6 +453,14 @@ public class MapGenerator : MonoBehaviour
             gameObjects.Add(go);
         }
         return gameObjects;
+    }
+
+    public float getDistanceBetweenMapIntergers(int L1, int L2, int width)
+    {
+        int horizontalDistance = Mathf.Abs((L1 % width) - (L2 % width));
+        int verticalDistance = Mathf.Abs((L1 / width) - (L2 / width));
+        float squaredDistance = Mathf.Pow(horizontalDistance, 2) + Mathf.Pow(verticalDistance, 2);
+        return Mathf.Sqrt(squaredDistance);
     }
 }
 
