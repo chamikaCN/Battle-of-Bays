@@ -43,8 +43,8 @@ public class GameController : MonoBehaviour
     public void ObjectPlacement()
     {
         generator.BuildNavmesh();
-        placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3, playerHQ.transform.position);
-        placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3, EnemyHQ.transform.position);
+        placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3, playerHQ.transform.position, true);
+        placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3, EnemyHQ.transform.position, false);
         currentShip = placedPlayerShips[0].GetComponent<Ship>();
         CameraController.instance.setTransform(currentShip.transform);
         currentShip.activatePlayerControl();

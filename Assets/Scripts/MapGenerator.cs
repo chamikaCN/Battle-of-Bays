@@ -366,12 +366,12 @@ public class MapGenerator : MonoBehaviour
         surface.BuildNavMesh();
     }
 
-    public List<GameObject> PlaceShips(GameObject model, int count, Vector3 hqLocation)
+    public List<GameObject> PlaceShips(GameObject model, int count, Vector3 hqLocation, bool isPlayerHQ)
     {
         List<GameObject> gameObjects = new List<GameObject>();
         for (int r = 0; r < count; r++)
         {
-            Vector3 place = getValidShipPlacement(commonRandom, hqLocation);
+            Vector3 place = getValidShipPlacement(commonRandom, hqLocation, isPlayerHQ ? playerHQPos : enemyHQPos);
             GameObject go = Instantiate(model, place, Quaternion.identity);
             go.transform.localScale = go.transform.localScale * 0.3f;
             gameObjects.Add(go);
@@ -380,10 +380,9 @@ public class MapGenerator : MonoBehaviour
     }
 
 
-    Vector3 getValidShipPlacement(System.Random random, Vector3 hqLocation)
+    Vector3 getValidShipPlacement(System.Random random, Vector3 hqLocation, int hq)
     {
-        //this random should be replaced by HQ near value priority system.
-        int val = random.Next(MapLength * MapWidth);
+        int val = random.Next(hq - (5 * MapWidth), hq + (5 * MapWidth));
         float x = mapMeshData.vertices[val].x;
         float z = mapMeshData.vertices[val].z;
         float y = mapMeshData.vertices[val].y;
@@ -398,11 +397,11 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            return getValidShipPlacement(random, hqLocation);
+            return getValidShipPlacement(random, hqLocation, hq);
         }
     }
 
-    public GameObject placeHQ(GameObject model, int index, Boolean isPlayerHQ)
+    public GameObject placeHQ(GameObject model, int index, bool isPlayerHQ)
     {
         if (isPlayerHQ)
         {
