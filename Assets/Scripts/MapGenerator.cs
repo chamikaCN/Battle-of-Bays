@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -29,7 +30,9 @@ public class MapGenerator : MonoBehaviour
     public RawImage image;
     MeshData mapMeshData;
     float[,] noiseMap;
-    Placement selectedDockPlacements;
+    List<Placement> selectedDockPlacements;
+    List<int> selectedPlacementIntegers;
+    List<Vector3> selectedPlacementVectors;
     NavMeshSurface surface;
     System.Random commonRandom;
     int playerHQPos, enemyHQPos;
@@ -47,8 +50,8 @@ public class MapGenerator : MonoBehaviour
     [System.Serializable]
     public struct Placement
     {
-        public List<Vector3> Vectors;
-        public List<int> integers;
+        public Vector3 Vector;
+        public int integer;
     }
 
 
@@ -258,7 +261,7 @@ public class MapGenerator : MonoBehaviour
             for (int x = 0; x < width; x++)
             {
                 float currentHeight = noiseMap[x, z];
-                if (!selectedDockPlacements.integers.Contains(z * width + x))
+                if (!selectedPlacementIntegers.Contains(z * width + x))
                 {
                     for (int i = 0; i < regions.Length; i++)
                     {
@@ -279,7 +282,7 @@ public class MapGenerator : MonoBehaviour
                 }
                 else
                 {
-                    HUDManager.instance.setupButtons(x, z, MapWidth, MapLength, buttonIndex, selectedDockPlacements.Vectors[selectedDockPlacements.integers.IndexOf(z * width + x)]);
+                    HUDManager.instance.setupButtons(x, z, MapWidth, MapLength, buttonIndex, selectedPlacementVectors[selectedPlacementIntegers.IndexOf(z * width + x)]);
                     colorMap[z * width + x] = Color.red;
                     buttonIndex++;
                 }
@@ -304,25 +307,22 @@ public class MapGenerator : MonoBehaviour
     public void calculateDockPlacements(int count)
     {
         System.Random rand = new System.Random();
-        Placement allSuitableDockPlacemets = detectSeaPlane(mapMeshData);
-        selectedDockPlacements = new Placement();
+        List<Placement> allSuitableDockPlacemets = detectSeaPlane(mapMeshData);
+        selectedDockPlacements = new List<Placement>();
         List<Vector3> selectedDockplaces = new List<Vector3>();
         List<int> selectedDockplacesOnMap = new List<int>();
-        int totalCount = allSuitableDockPlacemets.Vectors.Count;
+        int totalCount = allSuitableDockPlacemets.Count;
         for (int r = 0; r < count; r++)
         {
-            selectedDockplaces.Add(allSuitableDockPlacemets.Vectors[(totalCount / count) * r]);
-            selectedDockplacesOnMap.Add(allSuitableDockPlacemets.integers[(totalCount / count) * r]);
+            selectedDockPlacements.Add(allSuitableDockPlacemets[(totalCount / count) * r]);
         }
-        selectedDockPlacements.Vectors = selectedDockplaces;
-        selectedDockPlacements.integers = selectedDockplacesOnMap;
+        List<int> placementIntegers = selectedDockPlacements.Select(p => p.integer).ToList();
+        List<Vector3> placementVectors = selectedDockPlacements.Select(p => p.Vector).ToList();
     }
 
-    Placement detectSeaPlane(MeshData md)
+    List<Placement> detectSeaPlane(MeshData md)
     {
-        Placement pl = new Placement();
-        List<Vector3> dockplaces = new List<Vector3>();
-        List<int> dockplacesOnMap = new List<int>();
+        List<Placement> pl = new List<Placement>();
         for (int g = 0; g < MapLength * MapWidth; g++)
         {
             float x = md.vertices[g].x;
@@ -334,13 +334,12 @@ public class MapGenerator : MonoBehaviour
 
             if (y > 10 && getNeighbourSeaPlaneCount(md, g) > 4)
             {
-                dockplaces.Add(new Vector3(originalX, 2.5f * y, originalZ));
-                dockplacesOnMap.Add(g);
+                Placement p = new Placement();
+                p.Vector = new Vector3(originalX, 2.5f * y, originalZ);
+                p.integer = g;
+                pl.Add(p);
             }
         }
-
-        pl.Vectors = dockplaces;
-        pl.integers = dockplacesOnMap;
         return pl;
     }
 
@@ -405,25 +404,26 @@ public class MapGenerator : MonoBehaviour
     {
         if (isPlayerHQ)
         {
-            playerHQPos = selectedDockPlacements.integers[index];
+            playerHQPos = selectedPlacementIntegers[index];
             Debug.Log(playerHQPos);
         }
         else
         {
-            enemyHQPos = selectedDockPlacements.integers[index];
+            enemyHQPos = selectedPlacementIntegers[index];
             Debug.Log(enemyHQPos);
         }
-        GameObject go = Instantiate(model, selectedDockPlacements.Vectors[index], Quaternion.identity);
+        GameObject go = Instantiate(model, selectedPlacementVectors[index], Quaternion.identity);
         go.transform.localScale = go.transform.localScale * 0.5f;
-        selectedDockPlacements.Vectors.RemoveAt(index);
-        selectedDockPlacements.integers.RemoveAt(index);
+        selectedDockPlacements.RemoveAt(index);
+        selectedPlacementIntegers.RemoveAt(index);
+        selectedPlacementVectors.RemoveAt(index);
         return go;
     }
 
     public List<GameObject> PlaceDocks(GameObject model)
     {
         List<GameObject> gameObjects = new List<GameObject>();
-        foreach (Vector3 vec in selectedDockPlacements.Vectors)
+        foreach (Vector3 vec in selectedPlacementVectors)
         {
             GameObject go = Instantiate(model, vec, Quaternion.identity);
             go.transform.localScale = go.transform.localScale * 0.5f;
