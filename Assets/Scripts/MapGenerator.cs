@@ -316,8 +316,8 @@ public class MapGenerator : MonoBehaviour
         {
             selectedDockPlacements.Add(allSuitableDockPlacemets[(totalCount / count) * r]);
         }
-        List<int> placementIntegers = selectedDockPlacements.Select(p => p.integer).ToList();
-        List<Vector3> placementVectors = selectedDockPlacements.Select(p => p.Vector).ToList();
+        selectedPlacementIntegers = selectedDockPlacements.Select(p => p.integer).ToList();
+        selectedPlacementVectors = selectedDockPlacements.Select(p => p.Vector).ToList();
     }
 
     List<Placement> detectSeaPlane(MeshData md)
