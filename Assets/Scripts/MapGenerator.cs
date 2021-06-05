@@ -318,7 +318,6 @@ public class MapGenerator : MonoBehaviour
         int requiredPlacementCount = count;
         System.Random rand = new System.Random();
         List<Placement> allSuitableDockPlacemets = detectSeaPlane(mapMeshData);
-        Debug.Log("All suitable count " + allSuitableDockPlacemets.Count);
         selectedDockPlacements = new List<Placement>();
         while (requiredPlacementCount > 0)
         {
@@ -331,7 +330,6 @@ public class MapGenerator : MonoBehaviour
                 float dist = getDistanceBetweenMapIntergers(randPlacement.integer, item.integer, MapWidth);
                 if (dist < (1.414f * MapWidth / count))
                 {
-                    Debug.Log(dist);
                     isSuitable = false;
                     allSuitableDockPlacemets.RemoveAt(randIndex);
                     break;
@@ -339,7 +337,6 @@ public class MapGenerator : MonoBehaviour
             }
             if (isSuitable)
             {
-                Debug.Log("dockID: "+(count - requiredPlacementCount + 1).ToString() + " loopNo: " + loopCount+ " mapIndex: "+randIndex);
                 selectedDockPlacements.Add(randPlacement);
                 allSuitableDockPlacemets.RemoveAt(randIndex);
                 requiredPlacementCount -= 1;
