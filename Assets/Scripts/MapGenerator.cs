@@ -59,7 +59,6 @@ public class MapGenerator : MonoBehaviour
     {
         public Vector3 Vector { get; set; }
         public int integer { get; set; }
-        public float distance { get; set; }
     }
 
 
@@ -368,7 +367,6 @@ public class MapGenerator : MonoBehaviour
                 Placement p = new Placement();
                 p.Vector = new Vector3(originalX, 2.5f * y, originalZ);
                 p.integer = g;
-                p.distance = 0;
                 pl.Add(p);
             }
         }
