@@ -6,7 +6,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Ship : MonoBehaviour
 {
-    public GameObject explosion, selector;
+    public GameObject explosion, selector,wreck;
     GameObject Regenarate, Fire;
     public float sp;
     int health, maxHealth = 8;
@@ -100,7 +100,10 @@ public class Ship : MonoBehaviour
 
     public void getDestroyed()
     {
-        GameObject exp = Instantiate(explosion, transform.position + new Vector3(0, 1, 0), transform.rotation);
+
+        Instantiate(explosion, transform.position + new Vector3(0, 1, 0), transform.rotation);
+        GameObject gw = Instantiate(wreck, transform.position - new Vector3(0, 5, 0), transform.rotation) ;
+        gw.transform.localScale = gw.transform.localScale * 0.3f;
         Destroy(this.gameObject);
     }
 

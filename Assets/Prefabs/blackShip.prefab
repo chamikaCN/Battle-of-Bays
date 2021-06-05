@@ -60,6 +60,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -584,6 +585,7 @@ MonoBehaviour:
   explosion: {fileID: 5001204293950690948, guid: e517f3bfa6ea2f2448729c7178019fbe,
     type: 3}
   selector: {fileID: 5948827631979089071}
+  wreck: {fileID: 272693211731910871, guid: 46d0a06c1e3ff4f45aef06ed13855b0b, type: 3}
   sp: 0
   shipTeam: 1
 --- !u!136 &6222662693333086576
@@ -942,6 +944,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.0047169924, b: 0.0047169924, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

@@ -5490,11 +5490,12 @@ MonoBehaviour:
   - {fileID: 5883523522079944069, guid: 1bf085a790c9b4a4394763790cc4f11d, type: 3}
   - {fileID: 9060584550638680825, guid: 306871b49d3e18e488d25da52f2c39d3, type: 3}
   - {fileID: 8924420444894629620, guid: 95f17ac4a12a1c94ab670cc5a64bd44d, type: 3}
-  otherCount: 2
+  otherCount: 1
   OtherPrefabs:
-  - {fileID: 272693211731910871, guid: 46d0a06c1e3ff4f45aef06ed13855b0b, type: 3}
-  - {fileID: 4118041940596409488, guid: e292ba1f55d451f4c89af99abcc23a1b, type: 3}
   - {fileID: 101873104156668021, guid: 69f495c4b7735de46a8368f854d6231e, type: 3}
+  - {fileID: 4118041940596409488, guid: e292ba1f55d451f4c89af99abcc23a1b, type: 3}
+  - {fileID: 5319408721129423961, guid: 1b641e11f3001584fb87dcea97136694, type: 3}
+  - {fileID: 3819100989032352836, guid: 0670620d49e24454893a58ac9420c63f, type: 3}
   regions:
   - Name: Sea
     Height: 0.5
