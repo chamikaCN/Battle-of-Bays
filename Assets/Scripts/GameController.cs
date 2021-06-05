@@ -108,6 +108,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Won");
+                HUDManager.instance.StartGame();
             }
         }
         else if (ship.getTeam() == playerTeam)
@@ -133,6 +134,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Lost");
+                HUDManager.instance.StartGame();
             }
 
         }

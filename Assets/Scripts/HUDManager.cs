@@ -41,6 +41,17 @@ public class HUDManager : MonoBehaviour
         ClickUpdate();
     }
 
+    public void StartGame()
+    {
+        startPanel.SetActive(true);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+
     public void StartPlay()
     {
         loadingPanel.SetActive(true);
