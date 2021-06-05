@@ -102,7 +102,7 @@ public class Ship : MonoBehaviour
     {
 
         Instantiate(explosion, transform.position + new Vector3(0, 1, 0), transform.rotation);
-        GameObject gw = Instantiate(wreck, transform.position - new Vector3(0, 5, 0), transform.rotation) ;
+        GameObject gw = Instantiate(wreck, transform.position - new Vector3(0, 2, 0), transform.rotation) ;
         gw.transform.localScale = gw.transform.localScale * 0.3f;
         Destroy(this.gameObject);
     }
