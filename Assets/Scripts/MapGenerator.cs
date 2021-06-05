@@ -60,7 +60,6 @@ public class MapGenerator : MonoBehaviour
         public Vector3 Vector { get; set; }
         public int integer { get; set; }
         public float distance { get; set; }
-        
     }
 
 
@@ -315,32 +314,39 @@ public class MapGenerator : MonoBehaviour
 
     public void calculateDockPlacements(int count)
     {
+        int loopCount = 0;
+
+        int requiredPlacementCount = count;
+        System.Random rand = new System.Random();
         List<Placement> allSuitableDockPlacemets = detectSeaPlane(mapMeshData);
-        Debug.Log("All suitable count "+allSuitableDockPlacemets.Count);
+        Debug.Log("All suitable count " + allSuitableDockPlacemets.Count);
         selectedDockPlacements = new List<Placement>();
-        selectedDockPlacements.Add(allSuitableDockPlacemets[0]);
-        int currentPosInt = allSuitableDockPlacemets[0].integer;
-        allSuitableDockPlacemets.RemoveAt(0);
-        Debug.Log("first position " + currentPosInt);
-        for (int r = 0; r < (count - 1); r++)
+        while (requiredPlacementCount > 0)
         {
-            float maxScore = 0;
-            int maxScoreIndex = 0;
-            for (int i = 0; i < allSuitableDockPlacemets.Count; i++)
+            int randIndex = rand.Next(allSuitableDockPlacemets.Count);
+            Placement randPlacement = allSuitableDockPlacemets[randIndex];
+            bool isSuitable = true;
+            loopCount += 1;
+            foreach (Placement item in selectedDockPlacements)
             {
-                float distScore = allSuitableDockPlacemets[i].distance + getDistanceBetweenMapIntergers(allSuitableDockPlacemets[i].integer, currentPosInt, MapWidth);
-                allSuitableDockPlacemets[i].distance = distScore;
-                if (distScore > maxScore)
+                float dist = getDistanceBetweenMapIntergers(randPlacement.integer, item.integer, MapWidth);
+                if (dist < (1.414f * MapWidth / count))
                 {
-                    maxScore = distScore;
-                    maxScoreIndex = i;
+                    Debug.Log(dist);
+                    isSuitable = false;
+                    allSuitableDockPlacemets.RemoveAt(randIndex);
+                    break;
                 }
             }
-            currentPosInt = allSuitableDockPlacemets[maxScoreIndex].integer;
-            Debug.Log("loop " + r + " Score " + maxScore + " index " + maxScoreIndex + " mapPos " + currentPosInt);
-            selectedDockPlacements.Add(allSuitableDockPlacemets[maxScoreIndex]);
-            allSuitableDockPlacemets.RemoveAt(maxScoreIndex);
+            if (isSuitable)
+            {
+                Debug.Log("dockID: "+(count - requiredPlacementCount + 1).ToString() + " loopNo: " + loopCount+ " mapIndex: "+randIndex);
+                selectedDockPlacements.Add(randPlacement);
+                allSuitableDockPlacemets.RemoveAt(randIndex);
+                requiredPlacementCount -= 1;
+            }
         }
+        selectedDockPlacements.Sort((x, y) => x.integer.CompareTo(y.integer));
         selectedPlacementIntegers = selectedDockPlacements.Select(p => p.integer).ToList();
         selectedPlacementVectors = selectedDockPlacements.Select(p => p.Vector).ToList();
     }
