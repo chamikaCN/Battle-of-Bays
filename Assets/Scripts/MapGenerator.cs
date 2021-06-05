@@ -426,21 +426,36 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public GameObject placeHQ(GameObject model, int index, bool isPlayerHQ)
+    public GameObject placePlayerHQ(GameObject model, int index)
     {
-        if (isPlayerHQ)
-        {
-            playerHQPos = selectedPlacementIntegers[index];
-        }
-        else
-        {
-            enemyHQPos = selectedPlacementIntegers[index];
-        }
+        playerHQPos = selectedPlacementIntegers[index];
         GameObject go = Instantiate(model, selectedPlacementVectors[index], Quaternion.identity);
         go.transform.localScale = go.transform.localScale * 0.5f;
         selectedDockPlacements.RemoveAt(index);
         selectedPlacementIntegers.RemoveAt(index);
         selectedPlacementVectors.RemoveAt(index);
+        return go;
+    }
+
+    public GameObject placeEnemyHQ(GameObject model)
+    {
+        float maxdist = 0; 
+        int maxIndex = 0;
+        for (int h = 0; h < selectedDockPlacements.Count; h++)
+        {
+            float dist = getDistanceBetweenMapIntergers(playerHQPos, selectedDockPlacements[h].integer, MapWidth);
+            if ( dist > maxdist)
+            {
+                maxdist = dist;
+                maxIndex = h;
+            }
+        }
+        enemyHQPos = selectedPlacementIntegers[maxIndex];
+        GameObject go = Instantiate(model, selectedPlacementVectors[maxIndex], Quaternion.identity);
+        go.transform.localScale = go.transform.localScale * 0.5f;
+        selectedDockPlacements.RemoveAt(maxIndex);
+        selectedPlacementIntegers.RemoveAt(maxIndex);
+        selectedPlacementVectors.RemoveAt(maxIndex);
         return go;
     }
 
