@@ -92,6 +92,8 @@ public class HUDManager : MonoBehaviour
         if (selectedHQindex + selectedTeamIndex > -1)
         {
             loadingPanel.SetActive(true);
+            teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
+            dockPlacementButtons[selectedHQindex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
             mapPanel.SetActive(false);
             GameController.instance.setTeam(selectedTeamIndex == 0 ? GameController.Team.white : GameController.Team.black);
             GameController.instance.selectHQ(selectedHQindex);
