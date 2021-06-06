@@ -91,6 +91,12 @@ public class MapGenerator : MonoBehaviour
         {
             DestroyImmediate(oth.transform.GetChild(0).gameObject);
         }
+        GameObject shi = GameObject.Find("ShipWrecks");
+        int childShCount = shi.transform.childCount;
+        for (int m = 0; m < childShCount; m++)
+        {
+            DestroyImmediate(shi.transform.GetChild(0).gameObject);
+        }
     }
 
     float[,] generateNoiseMap()
