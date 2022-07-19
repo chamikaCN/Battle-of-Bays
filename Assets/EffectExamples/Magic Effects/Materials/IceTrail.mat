@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 1
+  version: 4
 --- !u!21 &2100000
 Material:
   serializedVersion: 6
@@ -26,7 +26,7 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3050
+  m_CustomRenderQueue: 3000
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
@@ -139,7 +139,7 @@ Material:
     - _SoftParticlesFarFadeDistance: 1
     - _SoftParticlesNearFadeDistance: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _Surface: 1
     - _UVSec: 0
     - _ZWrite: 0
@@ -154,8 +154,9 @@ Material:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 1.0666667, g: 1.654902, b: 2, a: 1}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0.14470588, g: 0.15113996, b: 0.16, a: 1}
+    - _EmissionColor: {r: 0.018413316, g: 0.019869331, b: 0.021980947, a: 1}
     - _EmissiveColor: {r: 1, g: 1, b: 1, a: 1}
     - _FresnelColor: {r: 0.8726415, g: 0.9390677, b: 1, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.8014706, g: 0.8014706, b: 0.8014706, a: 1}
+  m_BuildTextureStacks: []
