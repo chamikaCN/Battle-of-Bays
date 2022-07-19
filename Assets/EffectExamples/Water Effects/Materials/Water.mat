@@ -13,7 +13,7 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3050
+  m_CustomRenderQueue: 3000
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
@@ -66,11 +66,12 @@ Material:
     - _Metallic: 0.9
     - _Mode: 4
     - _QueueOffset: 0
+    - _ReceiveShadows: 1
     - _Smoothness: 1
     - _SoftParticlesEnabled: 1
     - _SoftParticlesFarFadeDistance: 0.05
     - _SoftParticlesNearFadeDistance: 0
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _Surface: 1
     - _ZWrite: 0
     m_Colors:
@@ -80,6 +81,7 @@ Material:
     - _Color: {r: 0.06950871, g: 0.13089299, b: 0.20754716, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 20, b: 0, a: 0}
+  m_BuildTextureStacks: []
 --- !u!114 &1856720225856929952
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -92,4 +94,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 1
+  version: 4
