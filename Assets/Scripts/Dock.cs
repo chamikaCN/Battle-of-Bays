@@ -21,7 +21,9 @@ public class Dock : MonoBehaviour
         indicatorB = transform.GetChild(2).gameObject;
         indicatorW = transform.GetChild(3).gameObject;
     }
-    void Start() {
+    void Start()
+    {
+        GlobalEventManager.shipDestroyed += onShipDestroyed;
         cannon = transform.GetChild(1).GetComponent<Cannon>();
         statusBar.setMaxHealth(maxHealth);
         health = maxHealth;
@@ -33,7 +35,8 @@ public class Dock : MonoBehaviour
         {
             ally.RegenarateHealth();
         }
-        if(enemyShips.Count>0){
+        if (enemyShips.Count > 0)
+        {
             cannon.attackToPoint(enemyShips[0].transform.position);
         }
 
@@ -88,14 +91,17 @@ public class Dock : MonoBehaviour
         health -= damage;
         statusBar.changeHealth(health);
 
-        if(health == 0){
+        if (health == 0)
+        {
             swapTeams();
         }
     }
 
-    public List<Ship> getAllyShips() { return allyShips; }
-
-    public List<Ship> getEnemyShips() { return enemyShips; }
+    public void onShipDestroyed(Ship ship)
+    {
+        if (allyShips.Contains(ship)) { removeAllyShip(ship); }
+        else if (enemyShips.Contains(ship)) { removeEnemyShip(ship); }
+    }
 
 
 }

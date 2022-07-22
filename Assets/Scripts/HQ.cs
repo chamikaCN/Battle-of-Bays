@@ -19,6 +19,7 @@ public class HQ : MonoBehaviour
         allyShips = new List<Ship>();
     }
     void Start() {
+        GlobalEventManager.shipDestroyed += onShipDestroyed;
         cannons[0] = transform.GetChild(2).GetComponent<Cannon>();
         cannons[1] = transform.GetChild(3).GetComponent<Cannon>();
         statusBar.setMaxHealth(maxHealth);
@@ -80,9 +81,11 @@ public class HQ : MonoBehaviour
         }
     }
 
-    public List<Ship> getAllyShips() { return allyShips; }
-
-    public List<Ship> getEnemyShips() { return enemyShips; }
+    public void onShipDestroyed(Ship ship)
+    {
+        if (allyShips.Contains(ship)) { removeAllyShip(ship); }
+        else if (enemyShips.Contains(ship)) { removeEnemyShip(ship); }
+    }
 
 
 }
