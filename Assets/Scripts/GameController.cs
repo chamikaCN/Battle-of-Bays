@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
         instance = this;
     }
     #endregion
+
     public enum Team { white, black, neutral }
     Team playerTeam;
     MapGenerator generator;
@@ -28,6 +29,10 @@ public class GameController : MonoBehaviour
     List<GameObject> placedPlayerShips, placedEnemyShips, placedDocks;
     GameObject playerHQ, EnemyHQ;
     Ship currentShip;
+
+    public void Start(){
+        GlobalEventManager.gameFinished += onGameFinished;
+    }
 
     public void MapGeneration()
     {
@@ -108,6 +113,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Won");
+                GlobalEventManager.invokeGameFinish();
                 HUDManager.instance.StartGame();
             }
         }
@@ -134,6 +140,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Lost");
+                GlobalEventManager.invokeGameFinish();
                 HUDManager.instance.StartGame();
             }
 
@@ -161,4 +168,9 @@ public class GameController : MonoBehaviour
         currentShip.activatePlayerControl();
 
     }
+
+    public void onGameFinished() {
+        generator.clearPlacedObjects();
+    }
+
 }
