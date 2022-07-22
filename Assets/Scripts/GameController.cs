@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
         instance = this;
     }
     #endregion
+
     public enum Team { white, black, neutral }
     Team playerTeam;
     MapGenerator generator;
@@ -28,6 +29,10 @@ public class GameController : MonoBehaviour
     List<GameObject> placedPlayerShips, placedEnemyShips, placedDocks;
     GameObject playerHQ, EnemyHQ;
     Ship currentShip;
+
+    public void Start(){
+        GlobalEventManager.gameFinished += onGameFinished;
+    }
 
     public void MapGeneration()
     {
@@ -80,15 +85,6 @@ public class GameController : MonoBehaviour
 
     public void DestroyCheck(Ship ship)
     {
-        foreach (GameObject item in placedDocks)
-        {
-            if (item.GetComponent<Dock>().getAllyShips().Contains(ship)) { item.GetComponent<Dock>().removeAllyShip(ship); }
-            else if (item.GetComponent<Dock>().getEnemyShips().Contains(ship)) { item.GetComponent<Dock>().removeEnemyShip(ship); }
-        }
-        if (playerHQ.GetComponent<HQ>().getAllyShips().Contains(ship)) { playerHQ.GetComponent<HQ>().removeAllyShip(ship); }
-        else if (playerHQ.GetComponent<HQ>().getEnemyShips().Contains(ship)) { playerHQ.GetComponent<HQ>().removeEnemyShip(ship); }
-        if (EnemyHQ.GetComponent<HQ>().getAllyShips().Contains(ship)) { EnemyHQ.GetComponent<HQ>().removeAllyShip(ship); }
-        else if (EnemyHQ.GetComponent<HQ>().getEnemyShips().Contains(ship)) { EnemyHQ.GetComponent<HQ>().removeEnemyShip(ship); }
 
         if (ship == currentShip)
         {
@@ -108,6 +104,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Won");
+                GlobalEventManager.invokeGameFinish();
                 HUDManager.instance.StartGame();
             }
         }
@@ -134,6 +131,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Lost");
+                GlobalEventManager.invokeGameFinish();
                 HUDManager.instance.StartGame();
             }
 
@@ -161,4 +159,9 @@ public class GameController : MonoBehaviour
         currentShip.activatePlayerControl();
 
     }
+
+    public void onGameFinished() {
+        generator.clearPlacedObjects();
+    }
+
 }

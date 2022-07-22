@@ -66,7 +66,6 @@ public class MapGenerator : MonoBehaviour
     {
         Seed = gameSeed;
         surface = GetComponent<NavMeshSurface>();
-        clearPlacedObjects();
         commonRandom = new System.Random();
 
         noiseMap = generateNoiseMap();
@@ -75,28 +74,6 @@ public class MapGenerator : MonoBehaviour
         mapMeshData = GenerateTerrainMesh(noiseMap, MeshHeight);
         drawMesh(mapMeshData);
         placeObjects(mapMeshData);
-    }
-
-    void clearPlacedObjects()
-    {
-        GameObject veg = GameObject.Find("Vegitation");
-        int childCount = veg.transform.childCount;
-        for (int m = 0; m < childCount; m++)
-        {
-            DestroyImmediate(veg.transform.GetChild(0).gameObject);
-        }
-        GameObject oth = GameObject.Find("OtherObjects");
-        int childObCount = oth.transform.childCount;
-        for (int m = 0; m < childObCount; m++)
-        {
-            DestroyImmediate(oth.transform.GetChild(0).gameObject);
-        }
-        GameObject shi = GameObject.Find("ShipWrecks");
-        int childShCount = shi.transform.childCount;
-        for (int m = 0; m < childShCount; m++)
-        {
-            DestroyImmediate(shi.transform.GetChild(0).gameObject);
-        }
     }
 
     float[,] generateNoiseMap()
@@ -483,6 +460,28 @@ public class MapGenerator : MonoBehaviour
         int verticalDistance = Mathf.Abs((L1 / width) - (L2 / width));
         float squaredDistance = Mathf.Pow(horizontalDistance, 2) + Mathf.Pow(verticalDistance, 2);
         return Mathf.Sqrt(squaredDistance);
+    }
+
+    public void clearPlacedObjects()
+    {
+        GameObject veg = GameObject.Find("Vegitation");
+        int childCount = veg.transform.childCount;
+        for (int m = 0; m < childCount; m++)
+        {
+            Destroy(veg.transform.GetChild(0).gameObject);
+        }
+        GameObject oth = GameObject.Find("OtherObjects");
+        int childObCount = oth.transform.childCount;
+        for (int m = 0; m < childObCount; m++)
+        {
+            Destroy(oth.transform.GetChild(0).gameObject);
+        }
+        GameObject shi = GameObject.Find("ShipWrecks");
+        int childShCount = shi.transform.childCount;
+        for (int m = 0; m < childShCount; m++)
+        {
+            Destroy(shi.transform.GetChild(0).gameObject);
+        }
     }
 }
 
