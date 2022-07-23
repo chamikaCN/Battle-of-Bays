@@ -32,6 +32,8 @@ public class HUDManager : MonoBehaviour
     void Start()
     {
         startPanel.SetActive(true);
+        GlobalEventManager.gameStarted += onGameStarted;
+        GlobalEventManager.gameConfigured += onGameConfigured;
     }
 
     void Update()
@@ -41,7 +43,7 @@ public class HUDManager : MonoBehaviour
         ClickUpdate();
     }
 
-    public void StartGame()
+    public void RestartGame()
     {
         startPanel.SetActive(true);
     }
@@ -52,16 +54,12 @@ public class HUDManager : MonoBehaviour
     }
 
 
-    public void StartPlay()
+    public void uiPlayButtonClick()
     {
-        loadingPanel.SetActive(true);
-        startPanel.SetActive(false);
-        GameController.instance.MapGeneration();
-        mapPanel.SetActive(true);
-        loadingPanel.SetActive(false);
+        GlobalEventManager.invokeGameStarted();
     }
 
-    public void SelectHQButton(int index)
+    public void uiSelectHQButtonClick(int index)
     {
         if (selectedHQindex != index)
         {
@@ -74,7 +72,7 @@ public class HUDManager : MonoBehaviour
         }
     }
 
-    public void SelectTeamButton(int index)
+    public void uiSelectTeamButtonClick(int index)
     {
         if (selectedTeamIndex != index)
         {
@@ -87,21 +85,12 @@ public class HUDManager : MonoBehaviour
         }
     }
 
-    public void CompleteSelection()
+    public void uiCompleteSelectionbuttonClick()
     {
         if (selectedHQindex + selectedTeamIndex > -1)
         {
-            loadingPanel.SetActive(true);
-            teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
-            dockPlacementButtons[selectedHQindex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
-            mapPanel.SetActive(false);
-            GameController.instance.setTeam(selectedTeamIndex == 0 ? GameController.Team.white : GameController.Team.black);
-            GameController.instance.selectHQ(selectedHQindex);
-            GameController.instance.ObjectPlacement();
-            gamePanel.SetActive(true);
-            loadingPanel.SetActive(false);
-            slider.value = 0.4f;
-
+            GameController.Team playerTeam = (selectedTeamIndex == 0 ? GameController.Team.white : GameController.Team.black);
+            GlobalEventManager.invokeGameConfigured(playerTeam, selectedHQindex);
         }
     }
 
@@ -194,6 +183,24 @@ public class HUDManager : MonoBehaviour
     public void TestSwapTeams()
     {
         GameController.instance.TestSwapTeams();
+    }
+
+    public void onGameStarted(){
+        loadingPanel.SetActive(true);
+        startPanel.SetActive(false);
+        mapPanel.SetActive(true);
+        loadingPanel.SetActive(false);
+    }
+
+    public void onGameConfigured(GameController.Team team, int HQindex){
+        loadingPanel.SetActive(true);
+        teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
+        dockPlacementButtons[selectedHQindex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
+        mapPanel.SetActive(false);
+        gamePanel.SetActive(true);
+        loadingPanel.SetActive(false);
+        slider.value = 0.4f;
+
     }
 
 

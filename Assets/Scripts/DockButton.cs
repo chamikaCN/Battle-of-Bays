@@ -9,7 +9,7 @@ public class DockButton : MonoBehaviour
 
     public void clicked()
     {
-        HUDManager.instance.SelectHQButton(id - 1);
+        HUDManager.instance.uiSelectHQButtonClick(id - 1);
     }
 
     public void setPlacement(Vector3 place)
