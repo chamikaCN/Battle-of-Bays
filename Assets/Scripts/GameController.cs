@@ -25,12 +25,15 @@ public class GameController : MonoBehaviour
     System.Random random;
     int gameSeed;
     public LayerMask waterLayerMask, shipsLayerMask, docksLayerMask;
-    public GameObject blackShip, whiteShip, dock, blackHQ, whiteHQ;
-    List<GameObject> placedPlayerShips, placedEnemyShips, placedDocks;
-    GameObject playerHQ, EnemyHQ;
+    public List<GameObject> placedPlayerShips { get; set; }
+    public List<GameObject> placedEnemyShips { get; set; }
+    public List<GameObject> placedDocks { get; set; }
+    public GameObject playerHQ { get; set; }
+    public GameObject EnemyHQ { get; set; }
     Ship currentShip;
 
-    public void Start(){
+    void Start()
+    {
         GlobalEventManager.gameFinished += onGameFinished;
     }
 
@@ -39,17 +42,15 @@ public class GameController : MonoBehaviour
         generator = GetComponent<MapGenerator>();
         random = new System.Random();
         gameSeed = random.Next(10000);
-        generator.GenerateMap(gameSeed);
-        generator.calculateDockPlacements(6);
-        generator.drawTexture();
+        // generator.GenerateMap(gameSeed);
+        // generator.calculateDockPlacements(6);
+        // generator.drawTexture();
     }
 
 
-    public void ObjectPlacement()
+    public void SelectPlayerShip()
     {
-        generator.BuildNavmesh();
-        placedPlayerShips = generator.PlaceShips(playerTeam == Team.black ? blackShip : whiteShip, 3, playerHQ.transform.position, true);
-        placedEnemyShips = generator.PlaceShips(playerTeam == Team.black ? whiteShip : blackShip, 3, EnemyHQ.transform.position, false);
+
         currentShip = placedPlayerShips[0].GetComponent<Ship>();
         CameraController.instance.setTransform(currentShip.transform);
         currentShip.activatePlayerControl();
@@ -58,9 +59,7 @@ public class GameController : MonoBehaviour
 
     public void selectHQ(int index)
     {
-        playerHQ = generator.placePlayerHQ(playerTeam == Team.black ? blackHQ : whiteHQ, index);
-        EnemyHQ = generator.placeEnemyHQ(playerTeam == Team.black ? whiteHQ : blackHQ);
-        placedDocks = generator.PlaceDocks(dock);
+        
     }
 
     public void playerMovement(Vector3 point)
@@ -105,7 +104,7 @@ public class GameController : MonoBehaviour
             {
                 Debug.Log("Game Over Won");
                 GlobalEventManager.invokeGameFinished();
-                HUDManager.instance.StartGame();
+                HUDManager.instance.RestartGame();
             }
         }
         else if (ship.getTeam() == playerTeam)
@@ -132,7 +131,7 @@ public class GameController : MonoBehaviour
             {
                 Debug.Log("Game Over Lost");
                 GlobalEventManager.invokeGameFinished();
-                HUDManager.instance.StartGame();
+                HUDManager.instance.RestartGame();
             }
 
         }
@@ -160,7 +159,8 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void onGameFinished() {
+    public void onGameFinished()
+    {
         generator.clearPlacedObjects();
     }
 
