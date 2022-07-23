@@ -6,23 +6,27 @@ using UnityEngine.Events;
 
 public static class GlobalEventManager
 {
-    public static event Action gameStarted, gameConfigured, gamePaused, gameResumed, gameFinished;
+    public static event Action gameStarted, gamePaused, gameResumed, gameFinished;
 
     public static event Action<Ship> shipDestroyed;
+
+    public static event Action<GameController.Team, int> gameConfigured;
 
     public static void invokeGameStarted()
     {
         if (gameStarted != null)
         {
+            Debug.Log("Game Started");
             gameStarted();
         }
     }
 
-    public static void invokeGameConfigured()
+    public static void invokeGameConfigured(GameController.Team playerTeam, int playerHQindex)
     {
         if (gameConfigured != null)
         {
-            gameConfigured();
+            Debug.Log("Game Configured");
+            gameConfigured(playerTeam, playerHQindex);
         }
     }
 
@@ -30,6 +34,7 @@ public static class GlobalEventManager
     {
         if (gamePaused != null)
         {
+            Debug.Log("Game Paused");
             gamePaused();
         }
     }
@@ -38,6 +43,7 @@ public static class GlobalEventManager
     {
         if (gameResumed != null)
         {
+            Debug.Log("Game Resumed");
             gameResumed();
         }
     }
@@ -46,6 +52,7 @@ public static class GlobalEventManager
     {
         if (gameFinished != null)
         {
+            Debug.Log("Game Finished");
             gameFinished();
         }
     }
