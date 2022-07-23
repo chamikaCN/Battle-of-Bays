@@ -46,7 +46,7 @@ public class HQ : SupplyBase
         statusBar.changeHealth(health);
 
         if(health == 0){
-            Debug.Log("We Lost "+ HQTeam);
+            Debug.Log("We Lost "+ team);
             GlobalEventManager.invokeGameFinished();
         }
     }
