@@ -25,6 +25,10 @@ public class MapGenerator : MonoBehaviour
     Hashtable otherCountNumber = new Hashtable()
                 {{ OthersCount.None, 0 }, { OthersCount.Low, 10 }, { OthersCount.Medium, 22 }, { OthersCount.High, 50 }};
     public GameObject[] OtherPrefabs;
+
+    [Header("Game Prefabs")]
+    public GameObject blackShipPrefab, whiteShipPrefab, dockPrefab, blackHQPrefab, whiteHQPrefab;
+
     [Header("Region Colors")]
     public TerrainType[] regions;
     public RawImage image;
@@ -61,8 +65,10 @@ public class MapGenerator : MonoBehaviour
         public int integer { get; set; }
     }
 
-    public void Start()
+    void Start()
     {
+        GlobalEventManager.gameStarted += onGameStarted;
+        GlobalEventManager.gameConfigured += onGameConfigured;
         GlobalEventManager.gameFinished += onGameFinished;
     }
 
@@ -427,12 +433,12 @@ public class MapGenerator : MonoBehaviour
 
     public GameObject placeEnemyHQ(GameObject model)
     {
-        float maxdist = 0; 
+        float maxdist = 0;
         int maxIndex = 0;
         for (int h = 0; h < selectedDockPlacements.Count; h++)
         {
             float dist = getDistanceBetweenMapIntergers(playerHQPos, selectedDockPlacements[h].integer, MapWidth);
-            if ( dist > maxdist)
+            if (dist > maxdist)
             {
                 maxdist = dist;
                 maxIndex = h;
@@ -489,9 +495,29 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    public void onGameStarted()
+    {
+        System.Random random = new System.Random();
+        int gameSeed = random.Next(10000);
+        GenerateMap(gameSeed);
+        calculateDockPlacements(6);
+        drawTexture();
+    }
+
+    public void onGameConfigured(GameController.Team playerTeam, int playerHQindex)
+    {
+        GameController.instance.playerHQ = placePlayerHQ(playerTeam == GameController.Team.black ? blackHQPrefab : whiteHQPrefab, playerHQindex);
+        GameController.instance.EnemyHQ = placeEnemyHQ(playerTeam == GameController.Team.black ? whiteHQPrefab : blackHQPrefab);
+        GameController.instance.placedDocks = PlaceDocks(dockPrefab);
+        BuildNavmesh();
+        GameController.instance.placedPlayerShips = PlaceShips(playerTeam == GameController.Team.black ? blackShipPrefab : whiteShipPrefab, 3, GameController.instance.playerHQ.transform.position, true);
+        GameController.instance.placedEnemyShips = PlaceShips(playerTeam == GameController.Team.black ? whiteShipPrefab : blackShipPrefab, 3, GameController.instance.EnemyHQ.transform.position, false);
+        GameController.instance.SelectPlayerShip();
+    }
+
     public void onGameFinished()
     {
-        clearPlacedObjects();
+
     }
 }
 

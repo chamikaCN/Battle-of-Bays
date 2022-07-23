@@ -10,34 +10,49 @@ public static class GlobalEventManager
 
     public static event Action<Ship> shipDestroyed;
 
-    public static void invokeGameStart()
+    public static event Action<GameController.Team, int> gameConfigured;
+
+    public static void invokeGameStarted()
     {
         if (gameStarted != null)
         {
+            Debug.Log("Game Started");
             gameStarted();
         }
     }
 
-    public static void invokeGamePause()
+    public static void invokeGameConfigured(GameController.Team playerTeam, int playerHQindex)
+    {
+        if (gameConfigured != null)
+        {
+            Debug.Log("Game Configured");
+            gameConfigured(playerTeam, playerHQindex);
+        }
+    }
+
+    public static void invokeGamePaused()
     {
         if (gamePaused != null)
         {
+            Debug.Log("Game Paused");
             gamePaused();
         }
     }
 
-    public static void invokeGameResume()
+    public static void invokeGameResumed()
     {
         if (gameResumed != null)
         {
+            Debug.Log("Game Resumed");
             gameResumed();
         }
     }
 
-    public static void invokeGameFinish()
+    public static void invokeGameFinished()
     {
         if (gameFinished != null)
         {
+            Debug.Log("Game Finished");
             gameFinished();
         }
     }
