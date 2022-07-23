@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dock : MonoBehaviour
+public class Dock : SupplyBase
 {
-    List<Ship> enemyShips, allyShips;
-    public GameController.Team dockTeam;
+    int maxHealth = 10;
     Cannon cannon;
-    int maxHealth = 10, health;
-    StatusBar statusBar;
-    Canvas statusCanvas;
     GameObject indicatorB, indicatorW;
 
     void Awake()
@@ -42,27 +38,6 @@ public class Dock : MonoBehaviour
 
     }
 
-    public void addEnemyShip(Ship ship)
-    {
-        enemyShips.Add(ship);
-    }
-
-    public void addAllyShip(Ship ship)
-    {
-        allyShips.Add(ship);
-    }
-
-    public void removeEnemyShip(Ship ship)
-    {
-        enemyShips.Remove(ship);
-    }
-
-    public void removeAllyShip(Ship ship)
-    {
-        ship.stopRegenarateAnim();
-        allyShips.Remove(ship);
-    }
-
     public void swapTeams()
     {
         List<Ship> temp = new List<Ship>(allyShips);
@@ -70,17 +45,12 @@ public class Dock : MonoBehaviour
         enemyShips = temp;
         statusBar.setMaxHealth(maxHealth);
         health = maxHealth;
-        setTeam(dockTeam == GameController.Team.black ? GameController.Team.white : GameController.Team.black);
-    }
-
-    public GameController.Team getTeam()
-    {
-        return dockTeam;
+        setTeam(team == GameController.Team.black ? GameController.Team.white : GameController.Team.black);
     }
 
     public void setTeam(GameController.Team newTeam)
     {
-        dockTeam = newTeam;
+        team = newTeam;
         statusBar.setColor(newTeam == GameController.Team.black ? Color.black : Color.white);
         indicatorB.SetActive(newTeam == GameController.Team.black ? true : false);
         indicatorW.SetActive(newTeam == GameController.Team.white ? true : false);
@@ -96,12 +66,5 @@ public class Dock : MonoBehaviour
             swapTeams();
         }
     }
-
-    public void onShipDestroyed(Ship ship)
-    {
-        if (allyShips.Contains(ship)) { removeAllyShip(ship); }
-        else if (enemyShips.Contains(ship)) { removeEnemyShip(ship); }
-    }
-
 
 }

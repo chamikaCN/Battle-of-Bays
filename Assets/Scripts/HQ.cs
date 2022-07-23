@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HQ : MonoBehaviour
+public class HQ : SupplyBase
 {
-    List<Ship> enemyShips, allyShips;
-    public GameController.Team HQTeam;
+    int maxHealth = 20;
     Cannon[] cannons = new Cannon[2];
-    int maxHealth = 20, health;
-    StatusBar statusBar;
-    Canvas statusCanvas;
 
     void Awake()
     {
@@ -23,7 +19,8 @@ public class HQ : MonoBehaviour
         cannons[0] = transform.GetChild(2).GetComponent<Cannon>();
         cannons[1] = transform.GetChild(3).GetComponent<Cannon>();
         statusBar.setMaxHealth(maxHealth);
-        statusBar.setColor(HQTeam == GameController.Team.black ? Color.black : Color.white);
+        statusBar.setColor(team == GameController.Team.black ? Color.black : Color.white);
+        maxHealth = 20;
         health = maxHealth;
     }
 
@@ -43,33 +40,6 @@ public class HQ : MonoBehaviour
 
     }
 
-    public void addEnemyShip(Ship ship)
-    {
-        enemyShips.Add(ship);
-    }
-
-    public void addAllyShip(Ship ship)
-    {
-        allyShips.Add(ship);
-    }
-
-    public void removeEnemyShip(Ship ship)
-    {
-        enemyShips.Remove(ship);
-    }
-
-    public void removeAllyShip(Ship ship)
-    {
-        ship.stopRegenarateAnim();
-        allyShips.Remove(ship);
-    }
-
-    public GameController.Team getTeam()
-    {
-        return HQTeam;
-    }
-
-
     public void getDamage(int damage)
     {
         health -= damage;
@@ -80,12 +50,5 @@ public class HQ : MonoBehaviour
             GlobalEventManager.invokeGameFinished();
         }
     }
-
-    public void onShipDestroyed(Ship ship)
-    {
-        if (allyShips.Contains(ship)) { removeAllyShip(ship); }
-        else if (enemyShips.Contains(ship)) { removeEnemyShip(ship); }
-    }
-
 
 }
