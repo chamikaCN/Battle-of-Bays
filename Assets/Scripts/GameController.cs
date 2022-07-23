@@ -30,10 +30,6 @@ public class GameController : MonoBehaviour
     GameObject playerHQ, EnemyHQ;
     Ship currentShip;
 
-    public void Start(){
-        GlobalEventManager.gameFinished += onGameFinished;
-    }
-
     public void MapGeneration()
     {
         generator = GetComponent<MapGenerator>();
@@ -158,10 +154,6 @@ public class GameController : MonoBehaviour
         currentShip.activateSelector();
         currentShip.activatePlayerControl();
 
-    }
-
-    public void onGameFinished() {
-        generator.clearPlacedObjects();
     }
 
 }

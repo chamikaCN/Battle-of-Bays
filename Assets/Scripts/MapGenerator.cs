@@ -61,6 +61,11 @@ public class MapGenerator : MonoBehaviour
         public int integer { get; set; }
     }
 
+    public void Start()
+    {
+        GlobalEventManager.gameFinished += onGameFinished;
+    }
+
 
     public void GenerateMap(int gameSeed)
     {
@@ -482,6 +487,11 @@ public class MapGenerator : MonoBehaviour
         {
             Destroy(shi.transform.GetChild(0).gameObject);
         }
+    }
+
+    public void onGameFinished()
+    {
+        clearPlacedObjects();
     }
 }
 
