@@ -104,7 +104,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Won");
-                GlobalEventManager.invokeGameFinish();
+                GlobalEventManager.invokeGameFinished();
                 HUDManager.instance.StartGame();
             }
         }
@@ -131,7 +131,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Lost");
-                GlobalEventManager.invokeGameFinish();
+                GlobalEventManager.invokeGameFinished();
                 HUDManager.instance.StartGame();
             }
 

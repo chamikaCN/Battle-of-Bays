@@ -6,11 +6,11 @@ using UnityEngine.Events;
 
 public static class GlobalEventManager
 {
-    public static event Action gameStarted, gamePaused, gameResumed, gameFinished;
+    public static event Action gameStarted, gameConfigured, gamePaused, gameResumed, gameFinished;
 
     public static event Action<Ship> shipDestroyed;
 
-    public static void invokeGameStart()
+    public static void invokeGameStarted()
     {
         if (gameStarted != null)
         {
@@ -18,7 +18,15 @@ public static class GlobalEventManager
         }
     }
 
-    public static void invokeGamePause()
+    public static void invokeGameConfigured()
+    {
+        if (gameConfigured != null)
+        {
+            gameConfigured();
+        }
+    }
+
+    public static void invokeGamePaused()
     {
         if (gamePaused != null)
         {
@@ -26,7 +34,7 @@ public static class GlobalEventManager
         }
     }
 
-    public static void invokeGameResume()
+    public static void invokeGameResumed()
     {
         if (gameResumed != null)
         {
@@ -34,7 +42,7 @@ public static class GlobalEventManager
         }
     }
 
-    public static void invokeGameFinish()
+    public static void invokeGameFinished()
     {
         if (gameFinished != null)
         {

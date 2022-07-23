@@ -77,7 +77,7 @@ public class HQ : MonoBehaviour
 
         if(health == 0){
             Debug.Log("We Lost "+ HQTeam);
-            GlobalEventManager.invokeGameFinish();
+            GlobalEventManager.invokeGameFinished();
         }
     }
 
