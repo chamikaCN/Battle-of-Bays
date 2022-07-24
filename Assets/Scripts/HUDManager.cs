@@ -203,7 +203,7 @@ public class HUDManager : MonoBehaviour
         slider.value = 0.4f;
     }
 
-    public void onGameFinished(){
+    public void onGameFinished(GameController.Team winner){
         gamePanel.SetActive(false);
         startPanel.SetActive(true);
     }

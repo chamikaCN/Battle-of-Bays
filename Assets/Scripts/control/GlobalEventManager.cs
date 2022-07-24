@@ -6,9 +6,11 @@ using UnityEngine.Events;
 
 public static class GlobalEventManager
 {
-    public static event Action gameStarted, gamePaused, gameResumed, gameFinished;
+    public static event Action gameStarted, gamePaused, gameResumed;
 
     public static event Action<Ship> shipDestroyed;
+
+    public static event Action<GameController.Team> gameFinished;
 
     public static event Action<GameController.Team, int> gameConfigured;
 
@@ -48,12 +50,12 @@ public static class GlobalEventManager
         }
     }
 
-    public static void invokeGameFinished()
+    public static void invokeGameFinished(GameController.Team winningTeam)
     {
         if (gameFinished != null)
         {
             Debug.Log("Game Finished");
-            gameFinished();
+            gameFinished(winningTeam);
         }
     }
 
