@@ -34,6 +34,7 @@ public class HUDManager : MonoBehaviour
         startPanel.SetActive(true);
         GlobalEventManager.gameStarted += onGameStarted;
         GlobalEventManager.gameConfigured += onGameConfigured;
+        GlobalEventManager.gameFinished += onGameFinished;
     }
 
     void Update()
@@ -200,7 +201,11 @@ public class HUDManager : MonoBehaviour
         gamePanel.SetActive(true);
         loadingPanel.SetActive(false);
         slider.value = 0.4f;
+    }
 
+    public void onGameFinished(){
+        gamePanel.SetActive(false);
+        startPanel.SetActive(true);
     }
 
 

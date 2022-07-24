@@ -57,11 +57,6 @@ public class GameController : MonoBehaviour
         currentShip.activateSelector();
     }
 
-    public void selectHQ(int index)
-    {
-        
-    }
-
     public void playerMovement(Vector3 point)
     {
         currentShip.moveToPoint(point);
@@ -161,7 +156,7 @@ public class GameController : MonoBehaviour
 
     public void onGameFinished()
     {
-        generator.clearPlacedObjects();
+
     }
 
 }

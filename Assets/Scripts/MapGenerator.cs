@@ -517,7 +517,7 @@ public class MapGenerator : MonoBehaviour
 
     public void onGameFinished()
     {
-
+        clearPlacedObjects();
     }
 }
 
