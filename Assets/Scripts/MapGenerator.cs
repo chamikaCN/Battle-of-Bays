@@ -515,9 +515,9 @@ public class MapGenerator : MonoBehaviour
         GameController.instance.SelectPlayerShip();
     }
 
-    public void onGameFinished()
+    public void onGameFinished(GameController.Team winner)
     {
-
+        clearPlacedObjects();
     }
 }
 

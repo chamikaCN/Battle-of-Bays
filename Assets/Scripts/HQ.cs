@@ -47,7 +47,7 @@ public class HQ : SupplyBase
 
         if(health == 0){
             Debug.Log("We Lost "+ team);
-            GlobalEventManager.invokeGameFinished();
+            GlobalEventManager.invokeGameFinished(team == GameController.Team.black ? GameController.Team.white : GameController.Team.black);
         }
     }
 

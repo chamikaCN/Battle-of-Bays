@@ -57,11 +57,6 @@ public class GameController : MonoBehaviour
         currentShip.activateSelector();
     }
 
-    public void selectHQ(int index)
-    {
-        
-    }
-
     public void playerMovement(Vector3 point)
     {
         currentShip.moveToPoint(point);
@@ -103,7 +98,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Won");
-                GlobalEventManager.invokeGameFinished();
+                GlobalEventManager.invokeGameFinished(playerTeam);
                 HUDManager.instance.RestartGame();
             }
         }
@@ -130,7 +125,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Lost");
-                GlobalEventManager.invokeGameFinished();
+                GlobalEventManager.invokeGameFinished(playerTeam==Team.white?Team.black:Team.white);
                 HUDManager.instance.RestartGame();
             }
 
@@ -159,9 +154,9 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void onGameFinished()
+    public void onGameFinished(GameController.Team winningTeam)
     {
-        generator.clearPlacedObjects();
+
     }
 
 }
