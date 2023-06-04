@@ -35,10 +35,10 @@ public class GameController : MonoBehaviour
     void Start()
     {
         GlobalEventManager.gameFinished += onGameFinished;
+        GlobalEventManager.gameConfigured += onGameConfigured;
         GlobalEventManager.gamePaused += onGamePaused;
         GlobalEventManager.gameResumed += onGameResumed;
     }
-
 
     public void SelectPlayerShip()
     {
@@ -146,9 +146,14 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void onGameFinished(GameController.Team winningTeam)
+    private void onGameConfigured(Team pTeam, int HQindex)
     {
+        setTeam(pTeam);
+    }
 
+
+    public void onGameFinished(Team playerTeam){
+        
     }
 
     public void onGamePaused()
