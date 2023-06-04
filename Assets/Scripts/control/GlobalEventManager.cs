@@ -28,6 +28,7 @@ public static class GlobalEventManager
         if (gameConfigured != null)
         {
             Debug.Log("Game Configured");
+            Debug.Log(playerTeam + " : "+ playerHQindex);
             gameConfigured(playerTeam, playerHQindex);
         }
     }

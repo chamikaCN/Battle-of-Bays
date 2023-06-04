@@ -88,10 +88,12 @@ public class HUDManager : MonoBehaviour
 
     public void uiCompleteSelectionbuttonClick()
     {
-        if (selectedHQindex + selectedTeamIndex > -1)
+        if (selectedHQindex > -1 &&  selectedTeamIndex > -1)
         {
             GameController.Team playerTeam = (selectedTeamIndex == 0 ? GameController.Team.white : GameController.Team.black);
             GlobalEventManager.invokeGameConfigured(playerTeam, selectedHQindex);
+        }else{
+            Debug.Log("Cannot Find Player Team or Player HQ");
         }
     }
 
@@ -177,7 +179,7 @@ public class HUDManager : MonoBehaviour
 
         var rectTransform = dockPlacementButtons[index].GetComponent<RectTransform>();
         dockPlacementButtons[index].GetComponent<DockButton>().setPlacement(place);
-        rectTransform.SetParent(transform.GetChild(2).GetComponent<RectTransform>());
+        rectTransform.SetParent(mapPanel.GetComponent<RectTransform>());
         rectTransform.position = new Vector2(Xposition, Yposition);
     }
 
@@ -186,14 +188,16 @@ public class HUDManager : MonoBehaviour
         GameController.instance.TestSwapTeams();
     }
 
-    public void onGameStarted(){
+    public void onGameStarted()
+    {
         loadingPanel.SetActive(true);
         startPanel.SetActive(false);
         mapPanel.SetActive(true);
         loadingPanel.SetActive(false);
     }
 
-    public void onGameConfigured(GameController.Team team, int HQindex){
+    public void onGameConfigured(GameController.Team team, int HQindex)
+    {
         loadingPanel.SetActive(true);
         teamSelectionButtons[selectedTeamIndex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
         dockPlacementButtons[selectedHQindex].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 0);
@@ -203,7 +207,8 @@ public class HUDManager : MonoBehaviour
         slider.value = 0.4f;
     }
 
-    public void onGameFinished(GameController.Team winner){
+    public void onGameFinished(GameController.Team winner)
+    {
         gamePanel.SetActive(false);
         startPanel.SetActive(true);
     }

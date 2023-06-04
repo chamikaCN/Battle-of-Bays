@@ -37,16 +37,6 @@ public class GameController : MonoBehaviour
         GlobalEventManager.gameFinished += onGameFinished;
     }
 
-    public void MapGeneration()
-    {
-        generator = GetComponent<MapGenerator>();
-        random = new System.Random();
-        gameSeed = random.Next(10000);
-        // generator.GenerateMap(gameSeed);
-        // generator.calculateDockPlacements(6);
-        // generator.drawTexture();
-    }
-
 
     public void SelectPlayerShip()
     {
