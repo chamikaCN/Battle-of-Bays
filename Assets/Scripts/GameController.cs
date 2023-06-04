@@ -35,6 +35,8 @@ public class GameController : MonoBehaviour
     void Start()
     {
         GlobalEventManager.gameFinished += onGameFinished;
+        GlobalEventManager.gamePaused += onGamePaused;
+        GlobalEventManager.gameResumed += onGameResumed;
     }
 
 
@@ -115,7 +117,7 @@ public class GameController : MonoBehaviour
             else
             {
                 Debug.Log("Game Over Lost");
-                GlobalEventManager.invokeGameFinished(playerTeam==Team.white?Team.black:Team.white);
+                GlobalEventManager.invokeGameFinished(playerTeam == Team.white ? Team.black : Team.white);
                 HUDManager.instance.RestartGame();
             }
 
@@ -147,6 +149,16 @@ public class GameController : MonoBehaviour
     public void onGameFinished(GameController.Team winningTeam)
     {
 
+    }
+
+    public void onGamePaused()
+    {
+        Time.timeScale = 0;
+    }
+
+        public void onGameResumed()
+    {
+        Time.timeScale = 1;
     }
 
 }

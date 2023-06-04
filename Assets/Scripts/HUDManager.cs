@@ -19,7 +19,7 @@ public class HUDManager : MonoBehaviour
     }
     #endregion
 
-    public GameObject gamePanel, mapPanel, startPanel, loadingPanel;
+    public GameObject resultPanel, pausePanel, gamePanel, mapPanel, startPanel, loadingPanel;
     public Slider slider;
     public RawImage mapImage;
     public Joystick cameraJoystick;
@@ -88,13 +88,29 @@ public class HUDManager : MonoBehaviour
 
     public void uiCompleteSelectionbuttonClick()
     {
-        if (selectedHQindex > -1 &&  selectedTeamIndex > -1)
+        if (selectedHQindex > -1 && selectedTeamIndex > -1)
         {
             GameController.Team playerTeam = (selectedTeamIndex == 0 ? GameController.Team.white : GameController.Team.black);
             GlobalEventManager.invokeGameConfigured(playerTeam, selectedHQindex);
-        }else{
+        }
+        else
+        {
             Debug.Log("Cannot Find Player Team or Player HQ");
         }
+    }
+
+    public void uiPauseButtonClick()
+    {
+        GlobalEventManager.invokeGamePaused();
+        pausePanel.SetActive(true);
+        gamePanel.SetActive(false);
+    }
+
+    public void uiResumeButtonClick()
+    {
+        GlobalEventManager.invokeGameResumed();
+        gamePanel.SetActive(true);
+        pausePanel.SetActive(false);
     }
 
     void SliderValueUpdate()
@@ -183,6 +199,11 @@ public class HUDManager : MonoBehaviour
         rectTransform.position = new Vector2(Xposition, Yposition);
     }
 
+    public void createResultScreen(GameController.Team winner)
+    {
+        resultPanel.transform.GetComponentInChildren<TMPro.TextMeshPro>().text = GameController.instance.getTeam() == winner ? "Congratulations" : "Try Again";
+    }
+
     public void TestSwapTeams()
     {
         GameController.instance.TestSwapTeams();
@@ -209,8 +230,17 @@ public class HUDManager : MonoBehaviour
 
     public void onGameFinished(GameController.Team winner)
     {
+        resultPanel.SetActive(true);
+        createResultScreen(winner);
         gamePanel.SetActive(false);
+        StartCoroutine(gameRestart());
+    }
+
+    IEnumerator<WaitForSeconds> gameRestart()
+    {
+        yield return new WaitForSeconds(5);
         startPanel.SetActive(true);
+        resultPanel.SetActive(false);
     }
 
 
