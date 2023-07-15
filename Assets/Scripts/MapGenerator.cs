@@ -386,37 +386,42 @@ public class MapGenerator : MonoBehaviour
         surface.BuildNavMesh();
     }
 
-    public List<GameObject> PlaceShips(GameObject model, int count, Vector3 hqLocation, bool isPlayerHQ)
+    public List<GameObject> PlaceInitialShips(GameController.Team team, int count, Vector3 hqLocation, int mapPosition)
     {
         List<GameObject> gameObjects = new List<GameObject>();
         for (int r = 0; r < count; r++)
         {
-            Vector3 place = getValidShipPlacement(commonRandom, hqLocation, isPlayerHQ ? playerHQPos : enemyHQPos);
-            GameObject go = Instantiate(model, place, Quaternion.identity);
-            go.transform.localScale = go.transform.localScale * 0.3f;
-            gameObjects.Add(go);
+            gameObjects.Add(PlaceShip(team, hqLocation, mapPosition));
         }
         return gameObjects;
     }
 
-
-    Vector3 getValidShipPlacement(System.Random random, Vector3 hqLocation, int hq)
+    public GameObject PlaceShip(GameController.Team team, Vector3 baseLocation, int mapPosition)
     {
-        int val = random.Next(hq - (5 * MapWidth), hq + (5 * MapWidth));
+        Vector3 place = getValidShipPlacement(baseLocation, mapPosition);
+        GameObject go = Instantiate(team == GameController.Team.black ? blackShipPrefab : whiteShipPrefab, place, Quaternion.identity);
+        go.transform.localScale = go.transform.localScale * 0.3f;
+        return go;
+    }
+
+
+    public Vector3 getValidShipPlacement(Vector3 baseLocation, int baseMapPosition)
+    {
+        int val = commonRandom.Next(baseMapPosition - (5 * MapWidth), baseMapPosition + (5 * MapWidth));
         float x = mapMeshData.vertices[val].x;
         float z = mapMeshData.vertices[val].z;
         float y = mapMeshData.vertices[val].y;
 
         float originalX = 5 * (x);
         float originalZ = 5 * (z);
-        float distanceSquared = Mathf.Pow((originalX - hqLocation.x), 2) + Mathf.Pow((originalZ - hqLocation.z), 2);
+        float distanceSquared = Mathf.Pow((originalX - baseLocation.x), 2) + Mathf.Pow((originalZ - baseLocation.z), 2);
         if (y < 10 && getNeighbourSeaPlaneCount(mapMeshData, val) > 7 && distanceSquared < 10000)
         {
             return new Vector3(originalX, 10, originalZ);
         }
         else
         {
-            return getValidShipPlacement(random, hqLocation, hq);
+            return getValidShipPlacement(baseLocation, baseMapPosition);
         }
     }
 
@@ -425,6 +430,7 @@ public class MapGenerator : MonoBehaviour
         playerHQPos = selectedPlacementIntegers[index];
         GameObject go = Instantiate(model, selectedPlacementVectors[index], Quaternion.identity);
         go.transform.localScale = go.transform.localScale * 0.5f;
+        go.GetComponent<HQ>().mapPosition = playerHQPos;
         selectedDockPlacements.RemoveAt(index);
         selectedPlacementIntegers.RemoveAt(index);
         selectedPlacementVectors.RemoveAt(index);
@@ -447,6 +453,7 @@ public class MapGenerator : MonoBehaviour
         enemyHQPos = selectedPlacementIntegers[maxIndex];
         GameObject go = Instantiate(model, selectedPlacementVectors[maxIndex], Quaternion.identity);
         go.transform.localScale = go.transform.localScale * 0.5f;
+        go.GetComponent<HQ>().mapPosition = enemyHQPos;
         selectedDockPlacements.RemoveAt(maxIndex);
         selectedPlacementIntegers.RemoveAt(maxIndex);
         selectedPlacementVectors.RemoveAt(maxIndex);
@@ -461,6 +468,7 @@ public class MapGenerator : MonoBehaviour
             GameObject go = Instantiate(model, vec, Quaternion.identity);
             go.transform.localScale = go.transform.localScale * 0.5f;
             gameObjects.Add(go);
+            go.GetComponent<Dock>().mapPosition = selectedPlacementIntegers[selectedPlacementVectors.IndexOf(vec)];
         }
         return gameObjects;
     }
@@ -510,8 +518,8 @@ public class MapGenerator : MonoBehaviour
         GameController.instance.EnemyHQ = placeEnemyHQ(playerTeam == GameController.Team.black ? whiteHQPrefab : blackHQPrefab);
         GameController.instance.placedDocks = PlaceDocks(dockPrefab);
         BuildNavmesh();
-        GameController.instance.placedPlayerShips = PlaceShips(playerTeam == GameController.Team.black ? blackShipPrefab : whiteShipPrefab, 3, GameController.instance.playerHQ.transform.position, true);
-        GameController.instance.placedEnemyShips = PlaceShips(playerTeam == GameController.Team.black ? whiteShipPrefab : blackShipPrefab, 3, GameController.instance.EnemyHQ.transform.position, false);
+        GameController.instance.placedPlayerShips = PlaceInitialShips(playerTeam, 3, GameController.instance.playerHQ.transform.position, playerHQPos);
+        GameController.instance.placedEnemyShips = PlaceInitialShips(playerTeam == GameController.Team.black ? GameController.Team.white : GameController.Team.black , 3, GameController.instance.EnemyHQ.transform.position, enemyHQPos);
         GameController.instance.SelectPlayerShip();
     }
 

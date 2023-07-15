@@ -14,7 +14,8 @@ public class HQ : SupplyBase
         enemyShips = new List<Ship>();
         allyShips = new List<Ship>();
     }
-    void Start() {
+    void Start()
+    {
         GlobalEventManager.shipDestroyed += onShipDestroyed;
         cannons[0] = transform.GetChild(2).GetComponent<Cannon>();
         cannons[1] = transform.GetChild(3).GetComponent<Cannon>();
@@ -22,6 +23,7 @@ public class HQ : SupplyBase
         statusBar.setColor(team == GameController.Team.black ? Color.black : Color.white);
         maxHealth = 20;
         health = maxHealth;
+        shipGenerator = StartCoroutine(shipGenerate(180));
     }
 
     void Update()
@@ -30,10 +32,13 @@ public class HQ : SupplyBase
         {
             ally.RegenarateHealth();
         }
-        if(enemyShips.Count>1){
+        if (enemyShips.Count > 1)
+        {
             cannons[0].attackToPoint(enemyShips[0].transform.position);
             cannons[1].attackToPoint(enemyShips[1].transform.position);
-        }else if(enemyShips.Count>0){
+        }
+        else if (enemyShips.Count > 0)
+        {
             cannons[0].attackToPoint(enemyShips[0].transform.position);
             cannons[1].attackToPoint(enemyShips[0].transform.position);
         }
@@ -45,8 +50,10 @@ public class HQ : SupplyBase
         health -= damage;
         statusBar.changeHealth(health);
 
-        if(health == 0){
-            Debug.Log("We Lost "+ team);
+        if (health == 0)
+        {
+            Debug.Log("We Lost " + team);
+            StopCoroutine(shipGenerator);
             GlobalEventManager.invokeGameFinished(team == GameController.Team.black ? GameController.Team.white : GameController.Team.black);
         }
     }

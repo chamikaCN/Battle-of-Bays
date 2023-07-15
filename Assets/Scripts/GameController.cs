@@ -131,6 +131,18 @@ public class GameController : MonoBehaviour
         playerTeam = team;
     }
 
+    public void spawnShip(Team team, Vector3 baseLocation, int mapPosition)
+    {
+        if (playerTeam == team)
+        {
+            placedPlayerShips.Add(GetComponent<MapGenerator>().PlaceShip(team, baseLocation, mapPosition));
+        }
+        else
+        {
+            placedEnemyShips.Add(GetComponent<MapGenerator>().PlaceShip(team, baseLocation, mapPosition));
+        }
+    }
+
     public void TestSwapTeams()
     {
         currentShip.deactivatePlayerControl();
@@ -152,8 +164,9 @@ public class GameController : MonoBehaviour
     }
 
 
-    public void onGameFinished(Team playerTeam){
-        
+    public void onGameFinished(Team playerTeam)
+    {
+
     }
 
     public void onGamePaused()
@@ -161,7 +174,7 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0;
     }
 
-        public void onGameResumed()
+    public void onGameResumed()
     {
         Time.timeScale = 1;
     }

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Ship : MonoBehaviour
 {
-    public GameObject explosion, selector,wreck;
+    public GameObject explosion, selector, wreck;
     GameObject Regenarate, Fire;
     public float sp;
     int health, maxHealth = 8;
@@ -40,10 +40,10 @@ public class Ship : MonoBehaviour
     {
         if (!playerControlled && direction != null)
         {
-            //       transform.LookAt(new Vector3(direction.x, 0, direction.z), Vector3.up);
-            //         Vector3 lookAtGoal = new Vector3(direction.x, transform.position.y, direction.z);
-            //         Vector3 dir = lookAtGoal - transform.position;
-            //         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5);
+            // transform.LookAt(new Vector3(direction.x, 0, direction.z), Vector3.up);
+            // Vector3 lookAtGoal = new Vector3(direction.x, transform.position.y, direction.z);
+            // Vector3 dir = lookAtGoal - transform.position;
+            // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 5);
         }
     }
 
@@ -81,14 +81,13 @@ public class Ship : MonoBehaviour
     {
         health = health - damage;
 
-        //Vector3 lTargetDir = -(direction - transform.position);
-        //lTargetDir.y = 0.0f;
-        //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(lTargetDir), Time.deltaTime * 100);
+        Vector3 lTargetDir = -(direction - transform.position);
+        lTargetDir.y = 0.0f;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(lTargetDir), Time.deltaTime * 100);
 
         this.direction = direction;
-        if (health == 4)
+        if (!Fire.activeInHierarchy && (health * 1f) / maxHealth <= 0.5f)
         {
-            //Instantiate(flames, transform.position + new Vector3(0, 3f, 0), transform.rotation, transform);
             Fire.SetActive(true);
         }
         healthBar.changeHealth(health);
@@ -102,7 +101,7 @@ public class Ship : MonoBehaviour
     {
         GlobalEventManager.invokeDestroyShip(this);
         Instantiate(explosion, transform.position + new Vector3(0, 1, 0), transform.rotation);
-        GameObject gw = Instantiate(wreck, transform.position - new Vector3(0, 2, 0), transform.rotation) ;
+        GameObject gw = Instantiate(wreck, transform.position - new Vector3(0, 2, 0), transform.rotation);
         gw.transform.localScale = gw.transform.localScale * 0.3f;
         gw.transform.parent = GameObject.Find("ShipWrecks").transform;
         Destroy(this.gameObject);

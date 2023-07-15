@@ -40,6 +40,7 @@ public class Dock : SupplyBase
 
     public void swapTeams()
     {
+        StopCoroutine(shipGenerator);
         List<Ship> temp = new List<Ship>(allyShips);
         allyShips = enemyShips;
         enemyShips = temp;
@@ -54,6 +55,7 @@ public class Dock : SupplyBase
         statusBar.setColor(newTeam == GameController.Team.black ? Color.black : Color.white);
         indicatorB.SetActive(newTeam == GameController.Team.black ? true : false);
         indicatorW.SetActive(newTeam == GameController.Team.white ? true : false);
+        shipGenerator =  StartCoroutine(shipGenerate(300));
     }
 
     public void getDamage(int damage)
