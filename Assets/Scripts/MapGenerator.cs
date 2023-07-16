@@ -12,7 +12,7 @@ public class MapGenerator : MonoBehaviour
     float Persistance = 0.5f, Lacunarity = 2;
     Vector3 MeshScale = new Vector3(5, 2.5f, 5);
     public int Seed;
-    public float Scale = 20;
+    public float PerlinScale = 20;
     public int FallOffSpread;
     public MeshFilter meshFilter;
     public MeshRenderer meshRenderer;
@@ -100,6 +100,12 @@ public class MapGenerator : MonoBehaviour
     array.GetLength(0) --> length
 
     Loop (x -> width) { Loop (z -> length) }
+
+
+    noiseMap - 10000
+    meshdata triangles - 58806 --- 0
+    meshdata UVs - 10000 --- (0.0, 0.0)
+    meshdata vertices - 10000 --- (-49.5, 0.0, 49.5)
     */
 
     float[,] generateNoiseMap()
@@ -119,7 +125,7 @@ public class MapGenerator : MonoBehaviour
         float halfWidth = MapWidth / 2;
         float halfLength = MapLength / 2;
 
-        if (Scale < 0.0001f) { Scale = 0.0001f; }
+        if (PerlinScale < 0.0001f) { PerlinScale = 0.0001f; }
 
         float maxNoiseHeight = float.MinValue;
         float minNoiseHeight = float.MaxValue;
@@ -133,8 +139,8 @@ public class MapGenerator : MonoBehaviour
                 float noiseHeight = 0;
                 for (int i = 0; i < Octaves; i++)
                 {
-                    float sampleX = (x - halfWidth) / Scale * frequency + octaveOffsets[i].x;
-                    float sampleZ = (z - halfLength) / Scale * frequency + octaveOffsets[i].y;
+                    float sampleX = (x - halfWidth) / PerlinScale * frequency + octaveOffsets[i].x;
+                    float sampleZ = (z - halfLength) / PerlinScale * frequency + octaveOffsets[i].y;
 
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleZ) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;

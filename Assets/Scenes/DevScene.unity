@@ -7209,7 +7209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Seed: 998
-  Scale: 20
+  PerlinScale: 20
   FallOffSpread: 10
   meshFilter: {fileID: 1462779598}
   meshRenderer: {fileID: 1462779597}
