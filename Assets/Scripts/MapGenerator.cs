@@ -10,6 +10,7 @@ public class MapGenerator : MonoBehaviour
 {
     int MeshHeight = 20, MapWidth = 100, MapLength = 100, Octaves = 4;
     float Persistance = 0.5f, Lacunarity = 2;
+    Vector3 MeshScale = new Vector3(5, 2.5f, 5);
     public int Seed;
     public float Scale = 20;
     public int FallOffSpread;
@@ -87,6 +88,20 @@ public class MapGenerator : MonoBehaviour
         placeObjects(mapMeshData);
     }
 
+
+    /*
+    z bounded by length
+    x bounded by width
+
+    2D arrays --> (width, length) --> [x][z]
+    1D arrays --> (width * length) --> [length * x + z]
+
+    array.GetLength(0) --> width
+    array.GetLength(0) --> length
+
+    Loop (x -> width) { Loop (z -> length) }
+    */
+
     float[,] generateNoiseMap()
     {
         float[,] noiseMap = new float[MapWidth, MapLength];
@@ -150,8 +165,8 @@ public class MapGenerator : MonoBehaviour
 
     void AddFalloffEfect(float[,] nMap)
     {
-        int length = nMap.GetLength(0);
-        int width = nMap.GetLength(1);
+        int width = nMap.GetLength(0);
+        int length = nMap.GetLength(1);
         for (int z = 0; z < length; z++)
         {
             for (int x = 0; x < width; x++)
@@ -519,7 +534,7 @@ public class MapGenerator : MonoBehaviour
         GameController.instance.placedDocks = PlaceDocks(dockPrefab);
         BuildNavmesh();
         GameController.instance.placedPlayerShips = PlaceInitialShips(playerTeam, 3, GameController.instance.playerHQ.transform.position, playerHQPos);
-        GameController.instance.placedEnemyShips = PlaceInitialShips(playerTeam == GameController.Team.black ? GameController.Team.white : GameController.Team.black , 3, GameController.instance.EnemyHQ.transform.position, enemyHQPos);
+        GameController.instance.placedEnemyShips = PlaceInitialShips(playerTeam == GameController.Team.black ? GameController.Team.white : GameController.Team.black, 3, GameController.instance.EnemyHQ.transform.position, enemyHQPos);
         GameController.instance.SelectPlayerShip();
     }
 
